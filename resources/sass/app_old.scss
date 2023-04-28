@@ -1,0 +1,23 @@
+// Import Bootstrap Sass files
+@import '~bootstrap/scss/bootstrap';
+
+// Import Bootstrap Vue Sass files
+@import '~bootstrap-vue/src/index.scss';
+
+// app.scss
+
+@import "~bootstrap/scss/bootstrap.scss";
+@import "~bootstrap-vue/src/index.scss";
+
+
+// Override Bootstrap Vue variables
+$primary: #007bff;
+$secondary: #6c757d;
+$success: #28a745;
+$info: #17a2b8;
+$warning: #ffc107;
+$danger: #dc3545;
+$light: #f8f9fa;
+$dark: #343a40;
+
+// Add your custom styles here
