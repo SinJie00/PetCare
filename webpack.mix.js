@@ -11,9 +11,13 @@ mix.js('resources/js/app.js', 'public/js')
 
 const mix = require('laravel-mix');
 /* const { VueLoaderPlugin } = require('vue-loader'); */
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
 mix.js('resources/js/app.js', 'public/js').vue()
       .sass('resources/sass/app.scss', 'public/css')
+      .copy('node_modules/jquery/dist/jquery.min.js', 'public/js')
+      .copy('node_modules/popper.js/dist/umd/popper.min.js', 'public/js')
+      .copy('node_modules/bootstrap/dist/js/bootstrap.min.js', 'public/js');
       .options({
          processCssUrls: false,
          postCss: [
@@ -28,6 +32,21 @@ mix.js('resources/js/app.js', 'public/js').vue()
             ]
          }
       })
+      .webpackConfig({
+         plugins: [
+            new BrowserSyncPlugin({
+               host: 'localhost',
+               port: 80,
+               proxy: 'http://petcare.test',
+               files: [
+                  'app/**/*.php',
+                  'resources/views/**/*.php',
+                  'resources/js/**/*.vue',
+                  'resources/sass/**/*.scss'
+               ]
+            })
+         ]
+      });
       /* .webpackConfig({
          plugins: [
              new VueLoaderPlugin()
