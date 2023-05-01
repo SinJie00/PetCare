@@ -11,7 +11,6 @@
 
     <!-- <p>Here you can find pets that are available for adoption and information about adoption.</p> -->
     <h2 class="mt-3">Our Story</h2>
-
     <p>Meefah Homeless Animals Shelter is a no-kill shelter and it is a registered NGO namely Selangor Furry Future
       Association which is always trying to save and take care of the dogs are strays that were caught by local councils
       and bailed out by animal lovers. The animal shelter is now responsible for sheltering and taking care of more than
