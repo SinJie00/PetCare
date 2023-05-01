@@ -39,8 +39,6 @@
 </template>
 
 <script>
-/* import { mapActions } from 'vuex'; */
-
 export default {
     name: 'Login',
     data() {
@@ -75,9 +73,11 @@ export default {
                 /* await this.login({ email: this.email, password: this.password }); */
                 await this.$store.dispatch('auth/login',{ email: this.email, password: this.password });
                 console.log('2');
-                this.$router.push({ name: 'home' }); // Redirect to Home page
+                toastr.success('Login successfully!');
+                this.$router.push({ name: 'Home' }); // Redirect to Home page
             } catch (error) {
                 console.log('error occur here');
+                /* toastr.error('Login failed!'); */
                 if (error.response && error.response.status === 422) {
                     this.errors  = error.response.data.errors;
                     // Validation error, display the error messages for email and password
