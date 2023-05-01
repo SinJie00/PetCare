@@ -105,17 +105,14 @@ export default {
     },
 
     methods: {
-        ...mapActions('auth',['register']),
+        ...mapActions('auth', ['register']),
         async register() {
             try {
                 const user = {
                     name: this.name,
                     email: this.email,
-                    phone: this.phone,
-                    gender: this.gender,
-                    address: this.address,
                     password: this.password,
-                    confirm_password: this.confirm_password
+                    password_confirmation: this.password_confirmation
                 }
                 const response = await this.register(user)
                 console.log('hi register here');
@@ -127,6 +124,35 @@ export default {
                 this.errors = error.response.data.errors
             }
         }
+        /* register(e) {
+            e.preventDefault()
+            if (this.password.length > 0) {
+                this.$axios.get('/sanctum/csrf-cookie').then(response => {
+                    this.$axios.post('api/register', {
+                        name: this.name,
+                        email: this.email,
+                        password: this.password
+                    })
+                        .then(response => {
+                            if (response.data.success) {
+                                window.location.href = "/login"
+                            } else {
+                                this.error = response.data.message
+                            }
+                        })
+                        .catch(function (error) {
+                            console.error(error);
+                        });
+                })
+            }
+        } */
     },
+
+    /* beforeRouteEnter(to, from, next) {
+        if (window.Laravel.isLoggedin) {
+            return next('dashboard');
+        }
+        next();
+    } */
 }
 </script>

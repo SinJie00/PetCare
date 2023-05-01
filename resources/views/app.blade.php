@@ -6,9 +6,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
     <title>{{env('APP_NAME')}}</title>
     <link href="{{ mix('css/app.css') }}" type="text/css" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-    integrity="sha512-m2Qf+zjql17JvSt/OzPjJbA2jo/h1Ivm5m5u5gVjK0+uPh7Vp99vC/37lxWpUp1ZYkOeLzHXj2YJCYW8vf4O3Q=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     @if (Auth::check())
