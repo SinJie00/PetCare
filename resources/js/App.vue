@@ -30,14 +30,24 @@
             <li class="nav-item">
               <router-link to="/stray" class="nav-link">Stray</router-link>
             </li>
-            <li class="nav-item">
+            <li v-if="user" class="nav-item mt-1">
+              <router-link to="/profile" class="text-dark" style="margin-left: 5px;">
+                  <font-awesome-icon :icon="['fas', 'user-circle']" class="fa-circle"  size="2x"/>
+              </router-link>
+            </li>
+            <li v-if="user" class="nav-item mt-1">
+              <button class="btn btn-danger ml-2" style="margin-left: 15px;" @click.prevent="logout">Logout</button>
+            </li>
+            <li v-if="!user" class="nav-item">
               <router-link to="/login" class="nav-link">Login</router-link>
             </li>
           </ul>
+          <!-- <div v-if="user" class="navbar-text ml-auto mr-3">{{ user.name }}</div>
+          <button class="btn btn-danger" @click="logout">Logout</button> -->
         </div>
       </div>
     </nav>
-    <div class="container mt-3" style="overflow-y: auto;">
+    <div class="router-view-container mt-3">
       <router-view></router-view>
     </div>
     <footer class="bg-dark text-light text-center py-3">
@@ -54,9 +64,6 @@
               <li class="list-inline-item me-3">
                 <a href="https://www.instagram.com/meefahshelter/" target="_blank" class="text-light"><font-awesome-icon :icon="['fab', 'instagram']" /></a>
               </li>
-              <!-- <a href="#" class="me-3"><i class="fab fa-facebook fa-lg"></i></a>
-            <a href="#" class="me-3"><i class="far fa-envelope fa-lg"></i></a>
-            <a href="#" class="me-3"><i class="fab fa-instagram fa-lg"></i></a> -->
             </ul>
           </div>
           <div class="d-flex justify-content-center">
@@ -82,50 +89,65 @@
         &copy; 2023 PetCare. All Rights Reserved.
       </div>
     </footer>
-    <!-- <footer class="bg-dark text-light text-center py-3">
-    <div class="container">
-      <div class="row">
-        <div class="col-12 col-md-4 mb-3 mb-md-0">
-          <ul class="list-unstyled d-flex justify-content-center">
-            <li class="mx-3">
-              <a href="#">
-                <i class="fab fa-facebook-f fa-2x"></i>
-              </a>
-            </li>
-            <li class="mx-3">
-              <a href="#">
-                <i class="far fa-envelope fa-2x"></i>
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div class="col-12 col-md-4 mb-3 mb-md-0">
-          <ul class="list-unstyled">
-            <li><router-link to="/" class="nav-link">Home</router-link></li>
-            <li><router-link to="/adopt" class="nav-link">Adopt</router-link></li>
-            <li><router-link to="/volunteer" class="nav-link">Volunteer</router-link></li>
-            <li><router-link to="/donation" class="nav-link">Donation</router-link></li>
-            <li><router-link to="/stray" class="nav-link">Stray</router-link></li>
-          </ul>
-        </div>
-        <div class="col-12 col-md-4">
-          <h5 class="mb-3">Subscribe to our newsletter</h5>
-        </div>
-      </div>
-    </div>
-  </footer> -->
   </div>
 </template>
 
 <script>
-import $ from 'jquery';
 import 'bootstrap';
 
 export default {
   name: 'App',
-  mounted() {
+  /* mounted() {
     $('.navbar-collapse').collapse();
+  }, */
+  data() {
+    return {
+      user: null
+    }
   },
+  computed: {
+    user() {
+      console.log('login here');
+      console.log(this.$store.state.auth.user);
+      const user = this.$store.state.auth.user;
+      //return Object.keys(user).length ? user : null;
+      if (Object.keys(user).length === 0) {
+        console.log('return null user');
+        return null;
+      }
+      console.log('user here');
+      return user;
+    },
+    /* isAuthenticated() {
+      return !!this.user.id;
+    } */
+  },
+  /* created() {
+    const user = JSON.parse(localStorage.getItem('user'))
+    if (user) {
+      this.user = user;
+    }
+  }, */
+  methods: {
+    logout() {
+      console.log('logout');
+      this.$store.dispatch('auth/logout');
+      this.user = null;
+      console.log('end here');
+    }
+  },
+  /* watch: {
+    $store: {
+      handler(newVal) {
+        if (newVal.getters.isLoggedIn) {
+          this.user = newVal.getters.user
+        } else {
+          this.user = null
+        }
+      },
+      deep: true
+    }
+  } */
 };
 </script>
 
@@ -137,13 +159,18 @@ export default {
   flex-direction: column;
 }
 
+.router-view-container {
+  flex: 1;
+  min-height: calc(100vh - 190px); /* 112px is the height of the navbar and footer */
+}
+
 .navbar {
   padding: 15px;
   font-size: 18px;
 }
 
-footer {
-  margin-top: auto;
+.fixed-bottom {
+  height: 100px;
 }
 
 /* footer {

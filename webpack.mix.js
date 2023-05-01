@@ -17,7 +17,7 @@ mix.js('resources/js/app.js', 'public/js').vue()
       .sass('resources/sass/app.scss', 'public/css')
       .copy('node_modules/jquery/dist/jquery.min.js', 'public/js')
       .copy('node_modules/popper.js/dist/umd/popper.min.js', 'public/js')
-      .copy('node_modules/bootstrap/dist/js/bootstrap.min.js', 'public/js');
+      .copy('node_modules/bootstrap/dist/js/bootstrap.min.js', 'public/js')
       .options({
          processCssUrls: false,
          postCss: [

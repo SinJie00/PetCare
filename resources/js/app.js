@@ -1,19 +1,59 @@
+import axios from 'axios';
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
+import store from './store'
 /* import Login from './components/Login.vue'; */
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import { faUserCircle,faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import { faFacebook, faInstagram } from '@fortawesome/free-brands-svg-icons';/* from '@fortawesome/free-solid-svg-icons' */
+/* import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css'; */
+/* import Vue3Toastify, { ToastContainerOptions } from 'vue3-toastify'; */
+import Toaster from "@meforma/vue-toaster";
 
 require('./bootstrap');
-library.add(faFacebook, faEnvelope, faInstagram);
+library.add(faUserCircle,faFacebook, faEnvelope, faInstagram);
+
+/* axios.defaults.withCredentials = true;
+
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response.status === 401) {
+      store.dispatch('auth/logout')
+    }
+    return Promise.reject(error)
+  }
+) */
 
 const app = createApp(App);
 /* app.component('Login', Login); */
 app.component('font-awesome-icon', FontAwesomeIcon); // Register the FontAwesomeIcon component globally
 app.use(router);
+app.use(store);
+app.use(Toaster);
+/* app.use(VueToasted, {
+  duration: 5000,
+  position: 'top-right',
+  theme: 'bubble'
+}) */
+/* app.use(toast, {
+  position: 'bottom-right',
+  timeout: 3000,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  draggablePercent: 0.7,
+  showCloseButtonOnHover: false,
+  hideProgressBar: true,
+  closeButton: 'button',
+  icon: true,
+  rtl: false
+}) */
+app.config.globalProperties.$toast = app.config.globalProperties.$toast || Toast
+
 app.mount('#app');
 /* app.use(BootstrapVue);
 app.use(IconsPlugin); */
