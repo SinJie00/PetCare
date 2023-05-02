@@ -11,8 +11,14 @@ import { faFacebook, faInstagram } from '@fortawesome/free-brands-svg-icons';/* 
 /* import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css'; */
 /* import Vue3Toastify, { ToastContainerOptions } from 'vue3-toastify'; */
-import Toaster from "@meforma/vue-toaster";
+/* import Toaster from '@meforma/vue-toaster'; */
 
+/* import 'jquery';
+import 'popper.js'; */
+/* import toastr from 'toastr'; */
+// Add toastr as a global property
+/* window.toastr = toastr; */
+/* import toastr from 'toastr'; */
 require('./bootstrap');
 library.add(faUserCircle,faFacebook, faEnvelope, faInstagram);
 
@@ -29,11 +35,12 @@ axios.interceptors.response.use(
 ) */
 
 const app = createApp(App);
+/* app.config.globalProperties.$toastr = toastr; */
 /* app.component('Login', Login); */
 app.component('font-awesome-icon', FontAwesomeIcon); // Register the FontAwesomeIcon component globally
 app.use(router);
 app.use(store);
-app.use(Toaster);
+app.use(toastr);
 /* app.use(VueToasted, {
   duration: 5000,
   position: 'top-right',
@@ -52,8 +59,8 @@ app.use(Toaster);
   icon: true,
   rtl: false
 }) */
-app.config.globalProperties.$toast = app.config.globalProperties.$toast || Toast
-
+/* app.config.globalProperties.$toast = app.config.globalProperties.$toast || Toast
+ */
 app.mount('#app');
 /* app.use(BootstrapVue);
 app.use(IconsPlugin); */

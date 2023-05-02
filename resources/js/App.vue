@@ -30,6 +30,9 @@
             <li class="nav-item">
               <router-link to="/stray" class="nav-link">Stray</router-link>
             </li>
+            <li v-if="!user" class="nav-item">
+              <router-link to="/login" class="nav-link">Login</router-link>
+            </li>
             <li v-if="user" class="nav-item mt-1">
               <router-link to="/profile" class="text-dark" style="margin-left: 5px;">
                   <font-awesome-icon :icon="['fas', 'user-circle']" class="fa-circle"  size="2x"/>
@@ -37,9 +40,6 @@
             </li>
             <li v-if="user" class="nav-item mt-1">
               <button class="btn btn-danger ml-2" style="margin-left: 15px;" @click.prevent="logout">Logout</button>
-            </li>
-            <li v-if="!user" class="nav-item">
-              <router-link to="/login" class="nav-link">Login</router-link>
             </li>
           </ul>
           <!-- <div v-if="user" class="navbar-text ml-auto mr-3">{{ user.name }}</div>
@@ -100,14 +100,14 @@ export default {
   /* mounted() {
     $('.navbar-collapse').collapse();
   }, */
-  data() {
+  /* data() {
     return {
       user: null
     }
-  },
+  }, */
   computed: {
     user() {
-      console.log('login here');
+      /* console.log('login here'); */
       console.log(this.$store.state.auth.user);
       const user = this.$store.state.auth.user;
       //return Object.keys(user).length ? user : null;
@@ -133,6 +133,7 @@ export default {
       console.log('logout');
       this.$store.dispatch('auth/logout');
       this.user = null;
+      this.$router.push('/');
       console.log('end here');
     }
   },
