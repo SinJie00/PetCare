@@ -21,7 +21,7 @@ class UserController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
-    
+
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = $user->createToken('authToken')->plainTextToken;
@@ -30,8 +30,7 @@ class UserController extends Controller
                 'user' => $user,
                 'token' => $token
             ], 200);
-        }
-        else{
+        } else {
             return response()->json([
                 'message' => 'Login unsuccessfully. The email or password is incorrect.'
             ], 401);
@@ -48,30 +47,36 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function rules():array
+    public function rules(Request $request, $user=null): array
     {
-        return [
+        $rules = [
             'name' => 'required|string|max:255',
             /* 'name' => ['required','string','max:255'], */
-            'email' => ['required', 'email', 'max:255', Rule::unique('users')],
+            'email' => ['required', 'email', 'max:255',Rule::unique('users')->ignore($user)], /* Rule::unique('users')->ignore($this->user)], */
             'gender' => ['required', Rule::in(['M', 'F'])],
-            'phone' => 'required|string|max:20',
+            'phone' => ['required', 'string', 'max:20', 'regex:/^[0-9]{3}-[0-9]{7}$/'],
             'address' => 'required|string|max:255',
-            'password' => ['required','string','min:8',/*'confirmed', 'same:confirm_password', */'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/'],
-            'confirm_password' => 'required_with:password|same:password',
         ];
+
+        if ($request->has('password') || $request->has('confirm_password')) {
+            $rules['password'] = ['required', 'string', 'min:8', 'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/'];
+            $rules['confirm_password'] = 'required_with:password|same:password';
+        }
+
+        return $rules;
     }
     public function register(Request $request)
     {
         $messages = [
             'required' => 'The :attribute field is required.',
             'email.unique' => 'The email address is already registered.',
+            'phone.regex' => 'The valid :attribute number format must be 01x-xxxxxxxx.',
             'password.min' => 'The :attribute must be at least :min characters.',
             'password.regex' => 'The password must contain at least one uppercase letter, one number, and one special character.',
             'confirm_password.same' => 'The confirmation password does not match.',
         ];
-            
-        $validator = Validator::make($request->all(), $this->rules(), $messages);
+
+        $validator = Validator::make($request->all(), $this->rules($request), $messages);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
@@ -88,7 +93,7 @@ class UserController extends Controller
 
         $user = User::create([
             'name' => $input['name'],
-            'email'=> $input['email'],            
+            'email' => $input['email'],
             'gender' => $input['gender'],
             'phone' => $input['phone'],
             'address' => $input['address'],
@@ -98,5 +103,39 @@ class UserController extends Controller
         $token = $user->createToken('authToken')->accessToken;
 
         return response()->json(['user' => $user, 'token' => $token], 200);
+    }
+
+    public function updateProfile(Request $request, User $user)
+    {
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        /* if (!$request->user()) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        else{
+            $user =  $request->user();
+        } */
+    
+       /*  Log::info('User information: ' . print_r($user, true)); */
+        /* $validator = Validator::make($request->all(), $this->rules());
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        } */
+        $validator = Validator::make($request->all(), $this->rules($request,$user));
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+        $user->update([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'gender' => $request->input('gender'),
+            'phone' => $request->input('phone'),
+            'address' => $request->input('address')
+        ]);
+
+        return response()->json(['message' => 'Update Profile Succesfully','user' => $user]);
     }
 }

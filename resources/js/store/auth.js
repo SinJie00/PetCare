@@ -5,7 +5,8 @@ export default {
     state: {
         token: localStorage.getItem('token') || '',
         status: '',
-        user: {}
+        user: {},
+        userRole: null
     },
     getters: {
         isLoggedIn: state => !!state.token,
@@ -15,6 +16,9 @@ export default {
     mutations: {
         SET_USER(state, user) {
             state.user = user;
+        },
+        SET_USER_ROLE(state, role) {
+            state.userRole = role;
         },
         AUTH_REQUEST(state) {
             state.status = 'loading';
@@ -38,6 +42,12 @@ export default {
             state.status = 'success';
             state.user = user;
         },
+        UPDATE_PROFILE_REQUEST(state) {
+            state.status = 'loading';
+        },
+        UPDATE_USER(state, user) {
+            state.user = user;
+        },
     },
     actions: {
         async login({ commit }, { email, password }) {
@@ -53,13 +63,14 @@ export default {
                 console.log(response.data);
                 console.log(response);
                 const { user, token } = response.data;
+                commit('SET_USER_ROLE', user.role);
                 /* console.log('get the token');
                 console.log(token);
                 console.log(user); */
                 localStorage.setItem('token', token);
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 commit('AUTH_SUCCESS', { token, user });
-                /* this.$toaster.success('Login successful!'); */
+                /* this.$toast.success('Login successful!'); */
                 /* return response; */
                 return Promise.resolve();
             } catch (error) {
@@ -73,7 +84,7 @@ export default {
                     const { message, errors } = error.response.data;
                     return Promise.reject(errors || message);
                 } */
-                
+
                 /* return Promise.reject(error); */
                 /* console.log(error.response.data.message);
                 throw new Error(error.response.data.message); */
@@ -100,17 +111,50 @@ export default {
         async register({ commit }, user) {
             try {
                 commit('AUTH_REQUEST');
+                console.log(user.name);
+                console.log(user.email);
+                console.log(user);
                 const response = await axios.post('/api/register', user);
-                const { user, token } = response.data;
+                const { currentUser, token } = response.data;
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                commit('AUTH_SUCCESS', { token, user });
-                this.$toast.success('Registration successful!');
+                commit('AUTH_SUCCESS', { token, currentUser });
+                /* this.$toast.success('Registration successful!'); */
                 return response;
             } catch (error) {
-                commit('AUTH_ERROR');
+                /* commit('AUTH_ERROR'); */
                 localStorage.removeItem('token');
-                throw new Error(error.response.data.message);
+                return Promise.reject(error);
+                /* throw new Error(error.response.data.message); */
                 /* reject(error); */
+            }
+        },
+        async updateProfile({ commit, state }, user) {
+            try {
+                console.log('vuex update profile');
+                console.log(user);
+                console.log(state.token);
+                commit('UPDATE_PROFILE_REQUEST');
+                const response = await axios.put('http://localhost:81/api/update-profile',
+                    {
+                        name: user.name,
+                        email: user.email,
+                        gender: user.gender,
+                        phone: user.phone,
+                        address: user.address, 
+                    },
+                    {
+                    headers: {
+                        'Authorization': `Bearer ${state.token}`
+                    }
+                });
+                commit('UPDATE_USER', response.data.user);
+                /* commit('UPDATE_PROFILE_SUCCESS'); */
+                console.log('success call api & set new user');
+                console.log(response.data.user);
+                return Promise.resolve(response);
+            } catch (error) {
+                console.log('vuex update error');
+                return Promise.reject(error);
             }
         },
         async getUser({ commit }) {
@@ -123,7 +167,7 @@ export default {
                 commit('AUTH_ERROR');
                 localStorage.removeItem('token');
                 delete axios.defaults.headers.common['Authorization'];
-                throw new Error(error.response.data.message);
+                return Promise.reject(error);
             }
         }
     }
