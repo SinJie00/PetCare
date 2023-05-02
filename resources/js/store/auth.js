@@ -11,7 +11,8 @@ export default {
     getters: {
         isLoggedIn: state => !!state.token,
         authStatus: state => state.status,
-        currentUser: state => state.user
+        currentUser: state => state.user,
+        isAdmin: state => state.userRole == 2
     },
     mutations: {
         SET_USER(state, user) {
