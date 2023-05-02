@@ -1,9 +1,28 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import store from '../store'; // Import the store
-import Home from '../components/Home';
-import Login from '../components/Login';
-import Register from '../components/Register';
-import Profile from '../components/Profile';
+import {
+  Home,
+  Login,
+  Register,
+  Profile,
+  AdoptionApplication,
+  AdoptionList,
+  DonationAdmin,
+  StrayPostAdmin,
+  ArticleAdmin,
+  VolunteerApplicationAdmin,
+  Adoption,
+  MoneyDonation,
+  ProductDonation,
+  VolunteerApplication,
+  StrayPost,
+  Article,
+} from '../pages/index.js';
+/* import Home from '../pages/Home';
+import Login from '../pages/Login';
+import Register from '../pages/Register';
+import Profile from '../pages/Profile'; */
+
 /* import { ROLE } from '../constants'; */
 
 /* const isAuthenticated = () => !!localStorage.getItem('token');
@@ -55,6 +74,66 @@ const routes = [
       roles: [ROLE.USER, ROLE.ADMIN],
     }, */
   },
+  {
+    path: '/admin/adoptionapplication',
+    name: 'AdoptionApplication',
+    component: AdoptionApplication
+  },
+  {
+    path: '/admin/adoptionlist',
+    name: 'AdoptionList',
+    component: AdoptionList
+  },
+  {
+    path: '/admin/volunteerapplication',
+    name: 'VolunteerApplicationAdmin',
+    component: VolunteerApplicationAdmin
+  },
+  {
+    path: '/admin/donation',
+    name: 'AdminDonation',
+    component: DonationAdmin
+  },
+  {
+    path: '/admin/straypost',
+    name: 'StrayPostAdmin',
+    component: StrayPostAdmin
+  },
+  {
+    path: '/admin/article',
+    name: 'ArticleAdmin',
+    component: ArticleAdmin
+  },
+  {
+    path: '/adoption',
+    name: 'Adoption',
+    component: Adoption
+  },
+  {
+    path: '/productdonation',
+    name: 'ProductDonation',
+    component: ProductDonation
+  },
+  {
+    path: '/moneydonation',
+    name: 'MoneyDonation',
+    component: MoneyDonation
+  },
+  {
+    path: '/volunteerapplication',
+    name: 'VolunteerApplication',
+    component: VolunteerApplication
+  },
+  {
+    path: '/straypost',
+    name: 'StrayPost',
+    component: StrayPost
+  },
+  {
+    path: '/productDonation',
+    name: 'Article',
+    component: Article
+  },
   /* {
     path: '/donation',
     component: Donation,
@@ -72,7 +151,7 @@ const routes = [
       }
     ]
   } */
-  
+
 ];
 
 const router = createRouter({
@@ -82,8 +161,8 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const isAuthenticated = store.getters['auth/isLoggedIn'];
-  
-  if ((to.name === 'Login'||to.name === 'Register') && isAuthenticated) {
+
+  if ((to.name === 'Login' || to.name === 'Register') && isAuthenticated) {
     next({ name: 'Home' }); // redirect authenticated user to home page
   } else if (to.name === 'Profile' && !isAuthenticated) {
     next({ name: 'Login' }); // redirect unauthenticated user to login page

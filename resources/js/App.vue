@@ -15,31 +15,48 @@
             <li class="nav-item">
               <router-link to="/" class="nav-link">Home</router-link>
             </li>
-            <li class="nav-item">
-              <router-link to="/adopt" class="nav-link">Adoption</router-link>
+            <li class="nav-item dropdown" v-if="isAdmin">
+              <a class="nav-link dropdown-toggle" href="#" id="adoptionNavbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">Adoption</a>
+              <div class="dropdown-menu" aria-labelledby="adoptionNavbarDropdown">
+                <router-link to="/admin/adoptionlist" class="dropdown-item">Adoption List</router-link>
+                <router-link to="/admin/adoptionapplication" class="dropdown-item">Adoption Application</router-link>
+              </div>
+            </li>
+            <li class="nav-item" v-else>
+              <router-link to="/adoption" class="nav-link">Adoption</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/volunteer" class="nav-link">Volunteer</router-link>
+              <router-link v-if="isAdmin" to="/admin/volunteerapplication" class="nav-link">Volunteer</router-link>
+              <router-link v-else to="/volunteerapplication" class="nav-link">Volunteer</router-link>
+            </li>
+            <li class="nav-item" v-if="isAdmin">
+              <router-link to="/admin/donation" class="nav-link">Donation</router-link>
+            </li>
+            <li class="nav-item dropdown" v-else>
+              <a class="nav-link dropdown-toggle" href="#" id="donationNavbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">Donation</a>
+              <div class="dropdown-menu" aria-labelledby="donationNavbarDropdown">
+                <router-link to="/productdonation" class="dropdown-item">Product Donation</router-link>
+                <router-link to="/moneydonation" class="dropdown-item">Money Donation</router-link>
+              </div>
             </li>
             <li class="nav-item">
-              <router-link to="/donation" class="nav-link">Donation</router-link>
+              <router-link v-if="isAdmin" to="/admin/article" class="nav-link">Article</router-link>
+              <router-link v-else to="/article" class="nav-link">Article</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/article" class="nav-link">Article</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link to="/stray" class="nav-link">Stray</router-link>
+              <router-link v-if="isAdmin" to="/admin/stray" class="nav-link">Stray</router-link>
+              <router-link v-else to="/stray" class="nav-link">Stray</router-link>
             </li>
             <li v-if="!user" class="nav-item">
               <router-link to="/login" class="nav-link">Login</router-link>
             </li>
             <li v-if="user" class="nav-item mt-1">
-              <router-link to="/profile" class="text-dark" style="margin-left: 5px;">
-                  <font-awesome-icon :icon="['fas', 'user-circle']" class="fa-circle"  size="2x"/>
+              <router-link to="/profile" class="text-dark" style="margin-left: 5px; margin-right: 15px">
+                <font-awesome-icon :icon="['fas', 'user-circle']" class="fa-circle" size="2x" />
               </router-link>
             </li>
             <li v-if="user" class="nav-item mt-1">
-              <button class="btn btn-danger ml-2" style="margin-left: 15px;" @click.prevent="logout">Logout</button>
+              <button class="btn btn-danger" @click.prevent="logout">Logout</button>
             </li>
           </ul>
           <!-- <div v-if="user" class="navbar-text ml-auto mr-3">{{ user.name }}</div>
@@ -56,13 +73,16 @@
           <div class="d-flex justify-content-center">
             <ul class="list-inline mb-2">
               <li class="list-inline-item me-3">
-                <a href="https://www.facebook.com/people/MeeFah-Homeless-Animals-Shelter/100079830543947/" target="_blank" class="text-light"><font-awesome-icon :icon="['fab', 'facebook']" /></a>
+                <a href="https://www.facebook.com/people/MeeFah-Homeless-Animals-Shelter/100079830543947/" target="_blank"
+                  class="text-light"><font-awesome-icon :icon="['fab', 'facebook']" /></a>
               </li>
               <li class="list-inline-item me-3">
-                <a href="mailto:furryfuture22@gmail.com" target="_blank" class="text-light"><font-awesome-icon :icon="['fas', 'envelope']" /></a>
+                <a href="mailto:furryfuture22@gmail.com" target="_blank" class="text-light"><font-awesome-icon
+                    :icon="['fas', 'envelope']" /></a>
               </li>
               <li class="list-inline-item me-3">
-                <a href="https://www.instagram.com/meefahshelter/" target="_blank" class="text-light"><font-awesome-icon :icon="['fab', 'instagram']" /></a>
+                <a href="https://www.instagram.com/meefahshelter/" target="_blank" class="text-light"><font-awesome-icon
+                    :icon="['fab', 'instagram']" /></a>
               </li>
             </ul>
           </div>
@@ -118,6 +138,9 @@ export default {
       console.log('user here');
       return user;
     },
+    isAdmin() {
+      return this.$store.getters['auth/isAdmin'];/* this.$store.state.auth.userRole == 2; */
+    }
     /* isAuthenticated() {
       return !!this.user.id;
     } */
@@ -135,8 +158,17 @@ export default {
       this.user = null;
       this.$router.push('/');
       console.log('end here');
-    }
+    },
+    /* toggleDropdown(event) {
+    event.stopPropagation();
+    this.$nextTick(() => {
+      $(event.target).parent().toggleClass('show');
+    });
+  } */
   },
+  /* mounted() {
+    $('.dropdown-toggle').dropdown();
+  } */
   /* watch: {
     $store: {
       handler(newVal) {
@@ -162,7 +194,8 @@ export default {
 
 .router-view-container {
   flex: 1;
-  min-height: calc(100vh - 190px); /* 112px is the height of the navbar and footer */
+  min-height: calc(100vh - 190px);
+  /* 112px is the height of the navbar and footer */
 }
 
 .navbar {
@@ -178,7 +211,6 @@ export default {
   position: absolute;
   bottom: 0;
   width: 100%;
-} */
-</style>
+} */</style>
 
   
