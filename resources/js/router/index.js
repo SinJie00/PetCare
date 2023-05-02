@@ -5,9 +5,9 @@ import {
   Login,
   Register,
   Profile,
+  AdoptionAnimal,
   AdoptionApplication,
-  AdoptionList,
-  DonationAdmin,
+  ProductDonationAdmin,
   StrayPostAdmin,
   ArticleAdmin,
   VolunteerApplicationAdmin,
@@ -75,14 +75,14 @@ const routes = [
     }, */
   },
   {
+    path: '/admin/adoptionlist',
+    name: 'AdoptionList',
+    component: AdoptionAnimal
+  },
+  {
     path: '/admin/adoptionapplication',
     name: 'AdoptionApplication',
     component: AdoptionApplication
-  },
-  {
-    path: '/admin/adoptionlist',
-    name: 'AdoptionList',
-    component: AdoptionList
   },
   {
     path: '/admin/volunteerapplication',
@@ -90,9 +90,9 @@ const routes = [
     component: VolunteerApplicationAdmin
   },
   {
-    path: '/admin/donation',
-    name: 'AdminDonation',
-    component: DonationAdmin
+    path: '/admin/productdonation',
+    name: 'ProductDonationAdmin',
+    component: ProductDonationAdmin
   },
   {
     path: '/admin/straypost',

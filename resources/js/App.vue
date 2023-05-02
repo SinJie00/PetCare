@@ -30,7 +30,7 @@
               <router-link v-else to="/volunteerapplication" class="nav-link">Volunteer</router-link>
             </li>
             <li class="nav-item" v-if="isAdmin">
-              <router-link to="/admin/donation" class="nav-link">Donation</router-link>
+              <router-link to="/admin/productdonation" class="nav-link">Donation</router-link>
             </li>
             <li class="nav-item dropdown" v-else>
               <a class="nav-link dropdown-toggle" href="#" id="donationNavbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">Donation</a>
