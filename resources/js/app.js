@@ -19,6 +19,7 @@ import 'popper.js'; */
 // Add toastr as a global property
 /* window.toastr = toastr; */
 /* import toastr from 'toastr'; */
+const $ = require('jquery')
 require('./bootstrap');
 library.add(faUserCircle,faFacebook, faEnvelope, faInstagram);
 
@@ -40,7 +41,7 @@ const app = createApp(App);
 app.component('font-awesome-icon', FontAwesomeIcon); // Register the FontAwesomeIcon component globally
 app.use(router);
 app.use(store);
-app.use(toastr);
+/* app.use(toastr); */
 /* app.use(VueToasted, {
   duration: 5000,
   position: 'top-right',
