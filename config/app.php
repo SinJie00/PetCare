@@ -181,6 +181,8 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
+        /* Carbon\CarbonServiceProvider::class, */
 
         /*
          * Package Service Providers...
@@ -209,6 +211,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
+        /* 'Carbon' => 'Carbon\Carbon', */
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
