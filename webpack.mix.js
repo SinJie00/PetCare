@@ -14,6 +14,7 @@ const mix = require('laravel-mix');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
 mix.js('resources/js/app.js', 'public/js').vue()
+      .setPublicPath('public')
       .sass('resources/sass/app.scss', 'public/css')
       .copy('node_modules/jquery/dist/jquery.min.js', 'public/js')
       .copy('node_modules/popper.js/dist/umd/popper.min.js', 'public/js')
@@ -33,6 +34,7 @@ mix.js('resources/js/app.js', 'public/js').vue()
          }
       })
       .webpackConfig({
+         /* publicPath: '/', */
          plugins: [
             new BrowserSyncPlugin({
                host: 'localhost',
