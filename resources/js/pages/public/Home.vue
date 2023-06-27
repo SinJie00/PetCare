@@ -4,7 +4,7 @@
     <h1>Meefah Homeless Animals Shelter</h1>
     <div class="d-flex justify-content-center">
       <div class="container">
-        <img src="../../../assets/img/home.png" class="img-fluid" alt="Responsive image">
+        <img src="../../../assets/img/home.png" class="img-fluid" alt="Home Picture">
       </div>
     </div>
     <!-- <p>This is the homepage of the Pet Adoption App.</p> -->

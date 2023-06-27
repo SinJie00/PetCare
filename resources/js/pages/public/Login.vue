@@ -20,7 +20,10 @@
                                 <!-- <span class="text-danger" v-show="errors && errors.password">{{ errors.password[0] }}</span> -->
                             </div>
                             <div class="text-center mt-4">
-                                <button class="btn btn-lg btn-primary btn-block">Login</button>
+                                <button type="submit" class="btn btn-lg btn-primary btn-block w-75 mx-auto">Login</button>
+                                <small class="text-muted text-end row w-75 mx-auto">
+                                    <router-link to="/forgotpassword">Forgot Password?</router-link>
+                                </small>
                             </div>
                         </form>
                         <div v-if="loginFailed" class="alert alert-danger text-center mt-3">{{ loginFailed }}</div>
@@ -44,25 +47,25 @@ export default {
     data() {
         return {
             /* user: { */
-                email: '',
-                password: '',
-                errors: { email: '', password: '' }
+            email: '',
+            password: '',
+            errors: { email: '', password: '' }
             /* } */
         }
     },
     computed: {
         emailError() {
-        return this.errors.email ? this.errors.email[0] : '';
+            return this.errors.email ? this.errors.email[0] : '';
         },
         passwordError() {
-        return this.errors.password ? this.errors.password[0] : '';
+            return this.errors.password ? this.errors.password[0] : '';
         },
-        loginFailed(){
+        loginFailed() {
             return this.errors.loginFailed;
         }
     },
     methods: {
-       /*  ...mapActions('auth', ['login']), */
+        /*  ...mapActions('auth', ['login']), */
         async handleSubmit() {
             // Reset the errors object
             this.errors = {};
@@ -71,7 +74,7 @@ export default {
                 console.log(this.email);
                 console.log(this.password);
                 /* await this.login({ email: this.email, password: this.password }); */
-                await this.$store.dispatch('auth/login',{ email: this.email, password: this.password });
+                await this.$store.dispatch('auth/login', { email: this.email, password: this.password });
                 console.log('2');
                 toastr.success('Login successfully!');
                 this.$router.push({ name: 'Home' }); // Redirect to Home page
@@ -79,7 +82,8 @@ export default {
                 console.log('error occur here');
                 /* toastr.error('Login failed!'); */
                 if (error.response && error.response.status === 422) {
-                    this.errors  = error.response.data.errors;
+                    console.log(error.response.data.errors);
+                    this.errors = error.response.data.errors;
                     // Validation error, display the error messages for email and password
                     /* this.errors.email = error.response.data.errors.email ? error.response.data.errors.email[0] : '';
                     this.errors.password = error.response.data.errors.password ? error.response.data.errors.password[0] : ''; */

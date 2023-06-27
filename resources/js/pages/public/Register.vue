@@ -106,7 +106,7 @@ export default {
                 console.log('error occur here');
                 if (error.response && error.response.status === 422) {
                     this.user.errors  = error.response.data.errors;
-                    console.log( this.user.errors );
+                    console.log(this.user.errors);
                 } /* else if (error.response && error.response.status === 401) {
                     this.errors.failed = error.response.data.message;
                 }  */else {

@@ -37,6 +37,7 @@ export default {
             state.status = '';
             state.token = '';
             state.user = {};
+            state.userRole = '';
             /* state.error = null; */
         },
         USER_SUCCESS(state, user) {
@@ -119,7 +120,6 @@ export default {
                 const { currentUser, token } = response.data;
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 commit('AUTH_SUCCESS', { token, currentUser });
-                /* this.$toast.success('Registration successful!'); */
                 return response;
             } catch (error) {
                 /* commit('AUTH_ERROR'); */
@@ -155,6 +155,7 @@ export default {
                 return Promise.resolve(response);
             } catch (error) {
                 console.log('vuex update error');
+                //console.log(Promise.reject(error));
                 return Promise.reject(error);
             }
         },

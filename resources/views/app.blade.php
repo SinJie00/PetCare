@@ -15,6 +15,9 @@
             'isLoggedin' => true,
             'user' => Auth::user()
         ])!!}
+        window.env = {
+            MIX_PUBLIC_PATH: '{{ env('MIX_PUBLIC_PATH') }}'
+        };
     </script>
     @else
         <script>

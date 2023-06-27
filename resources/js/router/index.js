@@ -5,10 +5,14 @@ import {
   Login,
   Register,
   Profile,
+  ForgotPassword,
+  ResetPassword,
   AdoptionAnimal,
   AdoptionApplication,
   ProductDonationAdmin,
   StrayPostAdmin,
+  CreateArticleAdmin,
+  EditArticleAdmin,
   ArticleAdmin,
   VolunteerApplicationAdmin,
   Adoption,
@@ -17,7 +21,9 @@ import {
   VolunteerApplication,
   StrayPost,
   Article,
+  ArticlePage,
 } from '../pages/index.js';
+
 /* import Home from '../pages/Home';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
@@ -75,34 +81,82 @@ const routes = [
     }, */
   },
   {
-    path: '/admin/adoptionlist',
-    name: 'AdoptionList',
-    component: AdoptionAnimal
+    path: '/forgotpassword',
+    name: 'ForgotPassword',
+    component: ForgotPassword,
+  },
+  {
+    path: '/api/reset-password',
+    name: 'ResetPassword',
+    component: ResetPassword,
+    /* props: route => ({
+      token: route.query.token,
+      email: route.query.email,
+    }), */
+  },
+  {
+    path: '/admin/adoptionanimal',
+    name: 'AdoptionAnimal',
+    component: AdoptionAnimal,
+    meta: {
+      requiresAdmin: true
+    }
   },
   {
     path: '/admin/adoptionapplication',
     name: 'AdoptionApplication',
-    component: AdoptionApplication
+    component: AdoptionApplication,
+    meta: {
+      requiresAdmin: true
+    }
   },
   {
     path: '/admin/volunteerapplication',
     name: 'VolunteerApplicationAdmin',
-    component: VolunteerApplicationAdmin
+    component: VolunteerApplicationAdmin,
+    meta: {
+      requiresAdmin: true
+    }
   },
   {
     path: '/admin/productdonation',
     name: 'ProductDonationAdmin',
-    component: ProductDonationAdmin
+    component: ProductDonationAdmin,
+    meta: {
+      requiresAdmin: true
+    }
   },
   {
     path: '/admin/straypost',
     name: 'StrayPostAdmin',
-    component: StrayPostAdmin
+    component: StrayPostAdmin,
+    meta: {
+      requiresAdmin: true
+    }
   },
   {
     path: '/admin/article',
     name: 'ArticleAdmin',
-    component: ArticleAdmin
+    component: ArticleAdmin,
+    meta: {
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/admin/article/create',
+    name: 'CreateArticleAdmin',
+    component: CreateArticleAdmin,
+    meta: {
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/admin/article/:articleId/edit',
+    name: 'EditArticleAdmin',
+    component: EditArticleAdmin,
+    meta: {
+      requiresAdmin: true
+    }
   },
   {
     path: '/adoption',
@@ -130,9 +184,14 @@ const routes = [
     component: StrayPost
   },
   {
-    path: '/productDonation',
+    path: '/article',
     name: 'Article',
     component: Article
+  },
+  {
+    path: '/articles/:articleId',
+    name: 'ArticlePage',
+    component: ArticlePage,
   },
   /* {
     path: '/donation',
@@ -160,10 +219,11 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  const isAdmin = store.getters['auth/isAdmin'];
   const isAuthenticated = store.getters['auth/isLoggedIn'];
 
-  if ((to.name === 'Login' || to.name === 'Register') && isAuthenticated) {
-    next({ name: 'Home' }); // redirect authenticated user to home page
+  if (((to.name === 'Login' || to.name === 'Register') && isAuthenticated) || (to.matched.some(record => record.meta.requiresAdmin) && !isAdmin)) {
+    next({ name: 'Home' }); // redirect user to home page
   } else if (to.name === 'Profile' && !isAuthenticated) {
     next({ name: 'Login' }); // redirect unauthenticated user to login page
   } else {

@@ -16,9 +16,10 @@
               <router-link to="/" class="nav-link">Home</router-link>
             </li>
             <li class="nav-item dropdown" v-if="isAdmin">
-              <a class="nav-link dropdown-toggle" href="#" id="adoptionNavbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">Adoption</a>
+              <a class="nav-link dropdown-toggle" href="#" id="adoptionNavbarDropdown" data-bs-toggle="dropdown"
+                aria-expanded="false">Adoption</a>
               <div class="dropdown-menu" aria-labelledby="adoptionNavbarDropdown">
-                <router-link to="/admin/adoptionlist" class="dropdown-item">Adoption List</router-link>
+                <router-link to="/admin/adoptionanimal" class="dropdown-item">Adoption Animal</router-link>
                 <router-link to="/admin/adoptionapplication" class="dropdown-item">Adoption Application</router-link>
               </div>
             </li>
@@ -33,7 +34,8 @@
               <router-link to="/admin/productdonation" class="nav-link">Donation</router-link>
             </li>
             <li class="nav-item dropdown" v-else>
-              <a class="nav-link dropdown-toggle" href="#" id="donationNavbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">Donation</a>
+              <a class="nav-link dropdown-toggle" href="#" id="donationNavbarDropdown" data-bs-toggle="dropdown"
+                aria-expanded="false">Donation</a>
               <div class="dropdown-menu" aria-labelledby="donationNavbarDropdown">
                 <router-link to="/productdonation" class="dropdown-item">Product Donation</router-link>
                 <router-link to="/moneydonation" class="dropdown-item">Money Donation</router-link>
@@ -44,8 +46,8 @@
               <router-link v-else to="/article" class="nav-link">Article</router-link>
             </li>
             <li class="nav-item">
-              <router-link v-if="isAdmin" to="/admin/stray" class="nav-link">Stray</router-link>
-              <router-link v-else to="/stray" class="nav-link">Stray</router-link>
+              <router-link v-if="isAdmin" to="/admin/straypost" class="nav-link">Stray</router-link>
+              <router-link v-else to="/straypost" class="nav-link">Stray</router-link>
             </li>
             <li v-if="!user" class="nav-item">
               <router-link to="/login" class="nav-link">Login</router-link>
@@ -92,15 +94,21 @@
                 <router-link to="/" class="nav-link">Home</router-link>
               </li>
               <li class="list-inline-item me-3">
-                <router-link to="/adopt" class="nav-link">Adoption</router-link>
+                <router-link v-if="isAdmin" to="/admin/adoptionanimal" class="nav-link">Adoption</router-link>
+                <router-link v-else to="/adoption" class="nav-link">Adoption</router-link>
               </li>
               <li class="list-inline-item me-3">
-                <router-link to="/volunteer" class="nav-link">Volunteer</router-link>
+                <router-link v-if="isAdmin" to="/admin/article" class="nav-link">Article</router-link>
+                <router-link v-else to="/article" class="nav-link">Article</router-link>
               </li>
               <li class="list-inline-item me-3">
-                <router-link to="/donation" class="nav-link">Donation</router-link>
+                <router-link v-if="isAdmin" to="/admin/productdonation" class="nav-link">Donation</router-link>
+                <router-link v-else to="/productdonation" class="nav-link">Donation</router-link>
               </li>
-              <li class="list-inline-item me-3"><router-link to="/stray" class="nav-link">Stray</router-link></li>
+              <li class="list-inline-item me-3">
+                <router-link v-if="isAdmin" to="/admin/straypost" class="nav-link">Stray</router-link>
+                <router-link v-else to="/straypost" class="nav-link">Stray</router-link>
+              </li>
             </ul>
           </div>
         </div>
@@ -139,6 +147,9 @@ export default {
       return user;
     },
     isAdmin() {
+      console.log('is admin');
+      console.log(this.$store.state.auth.userRole);
+      console.log(this.$store.getters['auth/isAdmin']);
       return this.$store.getters['auth/isAdmin'];/* this.$store.state.auth.userRole == 2; */
     }
     /* isAuthenticated() {

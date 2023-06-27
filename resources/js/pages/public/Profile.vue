@@ -10,7 +10,7 @@
                             <div class="col-md-8">
                                 <input id="name" type="text" class="form-control" v-model="user.name" required
                                     autofocus :disabled="!showUpdate">
-                                <div v-if="errors && errors.name" class="text-danger">{{ errors.name[0]}}</div>
+                                <div v-if="errors && errors.name" class="text-danger">{{errors.name[0]}}</div>
                             </div>
                         </div>
                         <div class="form-group row mt-2">
@@ -64,27 +64,30 @@
 <script>
 export default {
     name: 'Profile',
-    data() {
+    /* data() {
         return {
-            errors: {},
-            /* errorFailed: null */
+            showUpdate: false,
+            errors: {name: "hello"},
         }
-    },
+    }, */
+    //validations: { address: { required, },},
     computed: {
         user() {
             return this.$store.state.auth.user;
         },
         showUpdate() {
-            return showUpdate
+            return showUpdate;
         }
     },
     data() {
         return {
             showUpdate: false,
+            errors: {},
         };
     },
     methods: {
         async saveProfile() {
+            this.errors = {};
             try {
                 console.log(1);
                 console.log(this.user);
@@ -95,7 +98,14 @@ export default {
             } catch (error) {
                 console.log('error occur at profile.vue');
                 if (error.response && error.response.status === 422) {
+                    console.log(error.response.data.errors);
                     this.errors  = error.response.data.errors;
+                    console.log(this.errors);
+                    console.log(this.errors.name);
+                    //this.errors.name= true;
+                    console.log(this.errors.name[0]);
+                    if(this.errors && this.errors.name)
+                    console.log('yes');
                 } /* else {
                     errorFailed = 'An unknown error occurred. Please try again later.';
                 } */
