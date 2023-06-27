@@ -172,7 +172,7 @@ export default {
       }
     },
     getStrayPosts() {
-      axios.get('http://localhost:81/api/strayposts')
+      axios.get('https://petcare-ec207baddaf0.herokuapp.com/api/strayposts')
         .then((response) => {
           const strayPosts = response.data;
           console.log(strayPosts);
@@ -306,7 +306,7 @@ export default {
         console.log(key, value);
       }
 
-      axios.post('http://localhost:81/api/strayposts', formData)
+      axios.post('https://petcare-ec207baddaf0.herokuapp.com/api/strayposts', formData)
         .then(response => {
           console.log('api ok');
           console.log(response.data);

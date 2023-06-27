@@ -132,7 +132,7 @@ export default {
       this.modalMode = 'edit';
     }, */
     getStrayPosts() {
-      axios.get('http://localhost:81/api/strayposts')
+      axios.get('https://petcare-ec207baddaf0.herokuapp.com/api/strayposts')
         .then(response => {
           this.strayPosts = response.data;
         })
@@ -159,7 +159,7 @@ export default {
       if (this.imageFile) {
         editFormData.append('image', this.imageFile, this.imageFile.name);
       }
-      axios.post(`http://localhost:81/api/strayposts/${id}`, editFormData , {
+      axios.post(`https://petcare-ec207baddaf0.herokuapp.com/api/strayposts/${id}`, editFormData , {
         headers: {
         'Content-Type': 'multipart/form-data'
         }  
@@ -176,7 +176,7 @@ export default {
     getStrayPost(id) {
       this.modalMode = 'edit';
       return new Promise((resolve, reject) => {
-        axios.get(`http://localhost:81/api/strayposts/${id}`)
+        axios.get(`https://petcare-ec207baddaf0.herokuapp.com/api/strayposts/${id}`)
           .then(response => {
             resolve(response.data);
           })
@@ -188,7 +188,7 @@ export default {
     },
     deleteStrayPost(id) {
       if (confirm('Are you sure you want to delete this stray post?')) {
-        axios.delete(`http://localhost:81/api/strayposts/${id}`)
+        axios.delete(`https://petcare-ec207baddaf0.herokuapp.com/api/strayposts/${id}`)
           .then(response => {
             const index = this.strayPosts.findIndex(strayPost => strayPost.id === id);
             this.strayPosts.splice(index, 1);

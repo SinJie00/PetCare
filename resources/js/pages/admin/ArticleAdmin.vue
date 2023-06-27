@@ -65,7 +65,7 @@ export default {
     },
     getArticles() {
       // Fetch articles from the backend API
-      axios.get('http://localhost:81/api/articles')
+      axios.get('https://petcare-ec207baddaf0.herokuapp.com/api/articles')
         .then(response => {
           this.articles = response.data;
         })
@@ -77,7 +77,7 @@ export default {
       console.log(articleId);
     // Delete the article with the given ID from the backend API
     if (confirm('Are you sure you want to delete this article?')) {
-      axios.delete(`http://localhost:81/api/articles/${articleId}`)
+      axios.delete(`https://petcare-ec207baddaf0.herokuapp.com/api/articles/${articleId}`)
         .then(response => {
           const index = this.articles.findIndex(article => article.id === articleId);
           toastr.success(response.data.message);

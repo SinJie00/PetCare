@@ -137,7 +137,7 @@ export default {
       $('#adoptAnimalModal').modal('hide');
     }
     /* getAdoptionAnimal(id) {
-      axios.get(`http://localhost:81/api/adoptionanimals/${id}`)
+      axios.get(`https://petcare-ec207baddaf0.herokuapp.com/api/adoptionanimals/${id}`)
         .then(response => {
           this.animal = response.data;
         })

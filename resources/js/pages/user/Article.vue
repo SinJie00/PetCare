@@ -54,7 +54,7 @@ export default {
     },
     getArticles() {
       // Fetch articles from the backend API
-      axios.get('http://localhost:81/api/articles')
+      axios.get('https://petcare-ec207baddaf0.herokuapp.com/api/articles')
         .then(response => {
           this.articles = response.data;
         })

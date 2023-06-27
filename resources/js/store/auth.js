@@ -60,7 +60,7 @@ export default {
                 commit('AUTH_REQUEST');
                 // Get CSRF cookie
                 await axios.get('/sanctum/csrf-cookie');
-                const response = await axios.post('http://localhost:81/api/login', { email, password });/* .then(response =>{ */
+                const response = await axios.post('https://petcare-ec207baddaf0.herokuapp.com/api/login', { email, password });/* .then(response =>{ */
                 console.log('response here');
                 console.log(response.data);
                 console.log(response);
@@ -97,7 +97,7 @@ export default {
             console.log('Calling logout action');
             try {
                 const token = state.token;
-                const response = await axios.post('http://localhost:81/api/logout', {}, {
+                const response = await axios.post('https://petcare-ec207baddaf0.herokuapp.com/api/logout', {}, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -135,7 +135,7 @@ export default {
                 console.log(user);
                 console.log(state.token);
                 commit('UPDATE_PROFILE_REQUEST');
-                const response = await axios.put('http://localhost:81/api/update-profile',
+                const response = await axios.put('https://petcare-ec207baddaf0.herokuapp.com/api/update-profile',
                     {
                         name: user.name,
                         email: user.email,

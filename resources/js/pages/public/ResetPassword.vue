@@ -49,7 +49,7 @@ export default {
             } */
 
             // Send an API request to update the user's password
-            axios.post('http://localhost:81/api/reset-password', {
+            axios.post('https://petcare-ec207baddaf0.herokuapp.com/api/reset-password', {
                 token: this.$route.query.token,
                 email: this.$route.query.email,
                 password: this.password,

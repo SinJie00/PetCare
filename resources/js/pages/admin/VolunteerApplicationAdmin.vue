@@ -80,7 +80,7 @@ export default {
             const rowData = this.data();
             const userId = rowData.users_id;
 
-            axios.get(`http://localhost:81/api/users/${userId}`)
+            axios.get(`https://petcare-ec207baddaf0.herokuapp.com/api/users/${userId}`)
               .then(response => {
                 const userName = response.data.user.name || 'N/A';
                 const email = response.data.user.email || 'N/A';
@@ -127,7 +127,7 @@ export default {
   },
   methods: {
     getVolunteerApplications() {
-      axios.get('http://localhost:81/api/volunteerapplications')
+      axios.get('https://petcare-ec207baddaf0.herokuapp.com/api/volunteerapplications')
         .then(response => {
           this.volunteerApplications = response.data;
         })
@@ -146,7 +146,7 @@ export default {
         cancelButtonText: 'Cancel',
       }).then((result) => {
         if (result.isConfirmed) {
-          axios.put(`http://localhost:81/api/approve-volunteerapplication/${id}`)
+          axios.put(`https://petcare-ec207baddaf0.herokuapp.com/api/approve-volunteerapplication/${id}`)
             .then(response => {
               const index = this.volunteerApplications.findIndex(application => application.id == response.data.application.id);
               this.volunteerApplications[index] = response.data.application;
@@ -169,7 +169,7 @@ export default {
         cancelButtonText: 'Cancel',
       }).then((result) => {
         if (result.isConfirmed) {
-          axios.put(`http://localhost:81/api/reject-volunteerapplication/${id}`)
+          axios.put(`https://petcare-ec207baddaf0.herokuapp.com/api/reject-volunteerapplication/${id}`)
             .then(response => {
               const index = this.volunteerApplications.findIndex(application => application.id == response.data.application.id);
               this.volunteerApplications[index] = response.data.application;
@@ -192,7 +192,7 @@ export default {
         cancelButtonText: 'Cancel',
       }).then((result) => {
         if (result.isConfirmed) {
-          axios.delete(`http://localhost:81/api/volunteerapplications/${id}`)
+          axios.delete(`https://petcare-ec207baddaf0.herokuapp.com/api/volunteerapplications/${id}`)
             .then(response => {
               const index = this.volunteerApplications.findIndex(application => application.id === id);
               this.volunteerApplications.splice(index, 1);

@@ -56,7 +56,7 @@ export default {
         console.log('hi');
         console.log(this.$route.params.articleId);
         this.articleId = this.$route.params.articleId;
-        axios.get(`http://localhost:81/api/articles/${this.articleId}`)
+        axios.get(`https://petcare-ec207baddaf0.herokuapp.com/api/articles/${this.articleId}`)
             .then(response => {
                 this.article = response.data.article;
                 console.log(response.data);
@@ -76,7 +76,7 @@ export default {
             articleData.append('_method', 'PUT');
             console.log(articleData);
             // Send a POST request to your backend API to create the article
-            axios.post(`http://localhost:81/api/articles/${this.article.id}`, articleData)
+            axios.post(`https://petcare-ec207baddaf0.herokuapp.com/api/articles/${this.article.id}`, articleData)
                 .then(response => {
                     // Reset the form after successful creation
                     this.article.title = '';

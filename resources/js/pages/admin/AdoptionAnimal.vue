@@ -212,7 +212,7 @@ export default {
       this.modalMode = 'edit';
     },
     getAdoptionAnimals() {
-      axios.get('http://localhost:81/api/adoptionanimals')
+      axios.get('https://petcare-ec207baddaf0.herokuapp.com/api/adoptionanimals')
         .then(response => {
           this.adoptionAnimals = response.data;
         })
@@ -256,7 +256,7 @@ export default {
       /* for (let [key, value] of formData.entries()) {
         console.log(key, value);
       } */
-      axios.post('http://localhost:81/api/adoptionanimals', formData)
+      axios.post('https://petcare-ec207baddaf0.herokuapp.com/api/adoptionanimals', formData)
         .then(response => {
           console.log('api ok');
           console.log(response.data);
@@ -295,7 +295,7 @@ export default {
       /* const editFormData = new FormData();
       editFormData.append('animal', this.animal); */
       //formData.append('image', this.image);
-      axios.post(`http://localhost:81/api/adoptionanimals/${id}`, editFormData , {
+      axios.post(`https://petcare-ec207baddaf0.herokuapp.com/api/adoptionanimals/${id}`, editFormData , {
         headers: {
         'Content-Type': 'multipart/form-data'
         }  
@@ -325,7 +325,7 @@ export default {
       this.submitButton = 'Update'; */
       /* console.log(id); */
       return new Promise((resolve, reject) => {
-        axios.get(`http://localhost:81/api/adoptionanimals/${id}`)
+        axios.get(`https://petcare-ec207baddaf0.herokuapp.com/api/adoptionanimals/${id}`)
           .then(response => {
             console.log(this);
             /* this.animal = response.data; */
@@ -343,7 +343,7 @@ export default {
     deleteAdoptionAnimal(id) {
       console.log('hi');
       if (confirm('Are you sure you want to delete this animal?')) {
-        axios.delete(`http://localhost:81/api/adoptionanimals/${id}`)
+        axios.delete(`https://petcare-ec207baddaf0.herokuapp.com/api/adoptionanimals/${id}`)
           .then((response) => {
             const index = this.adoptionAnimals.findIndex(animal => animal.id === id);
             toastr.success(response.data.message);
@@ -373,7 +373,7 @@ export default {
       formData.append('folder', 'adoption_animals'); //
 
       // Send the file to the server using axios
-      axios.post('http://localhost:81/api/upload-image', formData)
+      axios.post('https://petcare-ec207baddaf0.herokuapp.com/api/upload-image', formData)
         .then(response => {
           // Handle the response from the server
           console.log(response.data);

@@ -45,7 +45,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
             data.append('file', this.loader.file);
 
             // Send a POST request to your backend API to handle the file upload
-            axios.post('http://localhost:81/api/upload-ckeditor-image', data)
+            axios.post('https://petcare-ec207baddaf0.herokuapp.com/api/upload-ckeditor-image', data)
                 .then(response => {
                     resolve({ default: response.data.url });
                 })
@@ -72,7 +72,7 @@ export default {
                     upload: {
                         types: ['png', 'jpg', 'jpeg', 'gif'],
                         adapter: MyUploadAdapter,
-                        url: 'http://localhost:81/api/upload-ckeditor-image', // Replace with your backend route for file upload
+                        url: 'https://petcare-ec207baddaf0.herokuapp.com/api/upload-ckeditor-image', // Replace with your backend route for file upload
                     },
                 }, */
             },
@@ -97,7 +97,7 @@ export default {
             articleData.append('author_id', this.$store.state.auth.user.id);
             console.log(articleData);
             // Send a POST request to your backend API to create the article
-            axios.post('http://localhost:81/api/articles', articleData)
+            axios.post('https://petcare-ec207baddaf0.herokuapp.com/api/articles', articleData)
                 .then(response => {
                     // Reset the form after successful creation
                     this.article.title = '';

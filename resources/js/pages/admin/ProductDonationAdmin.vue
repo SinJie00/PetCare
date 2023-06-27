@@ -175,7 +175,7 @@ export default {
       this.modalMode = 'edit';
     },
     getProducts() {
-      axios.get('http://localhost:81/api/products')
+      axios.get('https://petcare-ec207baddaf0.herokuapp.com/api/products')
         .then(response => {
           this.products = response.data;
         })
@@ -209,7 +209,7 @@ export default {
       formData.append('description', this.product.description);
       formData.append('image', this.imageFile);
       console.log(this.imageFile);
-      axios.post('http://localhost:81/api/products', formData)
+      axios.post('https://petcare-ec207baddaf0.herokuapp.com/api/products', formData)
         .then(response => {
           console.log('api ok');
           console.log(response.data);
@@ -240,7 +240,7 @@ export default {
       for (let [key, value] of editFormData.entries()) {
         console.log(key, value);
       }
-      axios.post(`http://localhost:81/api/products/${id}`, editFormData , {
+      axios.post(`https://petcare-ec207baddaf0.herokuapp.com/api/products/${id}`, editFormData , {
         headers: {
         'Content-Type': 'multipart/form-data'
         }  
@@ -263,7 +263,7 @@ export default {
     getProduct(id) {
       this.modalMode = 'edit';
       return new Promise((resolve, reject) => {
-        axios.get(`http://localhost:81/api/products/${id}`)
+        axios.get(`https://petcare-ec207baddaf0.herokuapp.com/api/products/${id}`)
           .then(response => {
             console.log(this);
             /* this.product = response.data; */
@@ -280,7 +280,7 @@ export default {
     },
     deleteProduct(id) {
       if (confirm('Are you sure you want to delete this product?')) {
-        axios.delete(`http://localhost:81/api/products/${id}`)
+        axios.delete(`https://petcare-ec207baddaf0.herokuapp.com/api/products/${id}`)
           .then(response => {
             const index = this.products.findIndex(product => product.id === id);
             this.products.splice(index, 1);

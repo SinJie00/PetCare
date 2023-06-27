@@ -121,7 +121,7 @@ export default {
             const userId = rowData.users_id;
             const animalId = rowData.adoption_animals_id;
 
-            axios.get(`http://localhost:81/api/adoptionanimals/${animalId}`)
+            axios.get(`https://petcare-ec207baddaf0.herokuapp.com/${animalId}`)
               .then(response => {
                 const animalName = response.data.animal.name || 'N/A';
                 const animalImage = response.data.animal.image || 'N/A';
@@ -149,7 +149,7 @@ export default {
                 $(addressColumn).text('N/A');
               });
 
-            axios.get(`http://localhost:81/api/users/${userId}`)
+            axios.get(`https://petcare-ec207baddaf0.herokuapp.com/api/users/${userId}`)
               .then(response => {
                 const userName = response.data.user.name || 'N/A';
                 const email = response.data.user.email || 'N/A';
@@ -196,7 +196,7 @@ export default {
   },
   methods: {
     getAdoptionApplications() {
-      axios.get('http://localhost:81/api/adoptionapplications')
+      axios.get('https://petcare-ec207baddaf0.herokuapp.com/api/adoptionapplications')
         .then(response => {
           this.adoptionApplications = response.data;
         })
@@ -213,7 +213,8 @@ export default {
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel',
       }).then((result) => {
-        if (result.isConfirmed) {      axios.put(`http://localhost:81/api/approve-adoptionapplication/${id}`)
+        if (result.isConfirmed) {      
+          axios.put(`https://petcare-ec207baddaf0.herokuapp.com/api/approve-adoptionapplication/${id}`)
         .then(response => {
           const index = this.adoptionApplications.findIndex(application => application.id == response.data.application.id);
           this.adoptionApplications[index] = response.data.application;
@@ -235,7 +236,7 @@ export default {
         cancelButtonText: 'Cancel',
       }).then((result) => {
         if (result.isConfirmed) {
-      axios.put(`http://localhost:81/api/reject-adoptionapplication/${id}`)
+      axios.put(`https://petcare-ec207baddaf0.herokuapp.com/api/reject-adoptionapplication/${id}`)
         .then(response => {
           const index = this.adoptionApplications.findIndex(application => application.id == response.data.application.id);
           this.adoptionApplications[index] = response.data.application;
@@ -257,7 +258,7 @@ export default {
         cancelButtonText: 'Cancel',
       }).then((result) => {
         if (result.isConfirmed) {      
-        axios.delete(`http://localhost:81/api/adoptionapplications/${id}`)
+        axios.delete(`https://petcare-ec207baddaf0.herokuapp.com/api/adoptionapplications/${id}`)
           .then(response => {
             const index = this.adoptionApplications.findIndex(application => application.id === id);
             this.adoptionApplications.splice(index, 1);
