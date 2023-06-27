@@ -9,12 +9,18 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Log;
-
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
+use Illuminate\Support\Facades\Password;
 
 class UserController extends Controller
 {
     use HasApiTokens;
+
+    public function index()
+    {
+        $users = User::all();
+        return response()->json($users);
+    }
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -47,14 +53,13 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function rules(Request $request, $user=null): array
+    public function rules(Request $request, $user = null): array
     {
         $rules = [
             'name' => 'required|string|max:255',
-            /* 'name' => ['required','string','max:255'], */
-            'email' => ['required', 'email', 'max:255',Rule::unique('users')->ignore($user)], /* Rule::unique('users')->ignore($this->user)], */
+            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user)], /* Rule::unique('users')->ignore($this->user)], */
             'gender' => ['required', Rule::in(['M', 'F'])],
-            'phone' => ['required', 'string', 'max:20', 'regex:/^[0-9]{3}-[0-9]{7}$/'],
+            'phone' => ['required', 'string', 'max:20', 'regex:/^[0-9]{3}-[0-9]{7}$/',Rule::unique('users')->ignore($user)],
             'address' => 'required|string|max:255',
         ];
 
@@ -65,12 +70,14 @@ class UserController extends Controller
 
         return $rules;
     }
+
     public function register(Request $request)
     {
         $messages = [
             'required' => 'The :attribute field is required.',
             'email.unique' => 'The email address is already registered.',
             'phone.regex' => 'The valid :attribute number format must be 01x-xxxxxxxx.',
+            'phone.unique'=> 'The phone number is already registered.',
             'password.min' => 'The :attribute must be at least :min characters.',
             'password.regex' => 'The password must contain at least one uppercase letter, one number, and one special character.',
             'confirm_password.same' => 'The confirmation password does not match.',
@@ -84,7 +91,7 @@ class UserController extends Controller
 
         $input = $request->only(['name', 'email', 'gender', 'phone', 'address', 'password', 'confirm_password']);
 
-        Log::debug('confirm_password: ' . $input['confirm_password']); // add this line to log the confirm_password value
+        //Log::debug('confirm_password: ' . $input['confirm_password']); // add this line to log the confirm_password value
 
         // check if password and confirm_password fields match
         /* if ($input['password'] !== $input['confirm_password']) {
@@ -107,27 +114,25 @@ class UserController extends Controller
 
     public function updateProfile(Request $request, User $user)
     {
+        $messages = [
+            'required' => 'The :attribute field is required.',
+            'email.unique' => 'The email address is already registered.',
+            'phone.regex' => 'The valid :attribute number format must be 01x-xxxxxxxx.',
+            'phone.unique'=> 'The phone number is already registered.',
+        ];
+
         $user = $request->user();
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-        /* if (!$request->user()) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-        else{
-            $user =  $request->user();
-        } */
-    
-       /*  Log::info('User information: ' . print_r($user, true)); */
-        /* $validator = Validator::make($request->all(), $this->rules());
+
+        /*  Log::info('User information: ' . print_r($user, true)); */
+        $validator = Validator::make($request->all(), $this->rules($request, $user), $messages);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
-        } */
-        $validator = Validator::make($request->all(), $this->rules($request,$user));
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
+        
         $user->update([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
@@ -136,6 +141,54 @@ class UserController extends Controller
             'address' => $request->input('address')
         ]);
 
-        return response()->json(['message' => 'Update Profile Succesfully','user' => $user]);
+        return response()->json(['message' => 'Update Profile Successfully', 'user' => $user]);
     }
+    public function getUser(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        return response()->json(['user' => $user]);
+    }
+
+    /*forgot password*/
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $status = Password::sendResetLink($request->only('email'));
+
+        return $status === Password::RESET_LINK_SENT
+            ? response()->json(['message' => 'Reset password link sent to your email.'])
+            : response()->json(['message' => 'Failed to send reset password link.'], 500);
+    }
+
+    /*  public function showResetPasswordForm($token)
+    {
+        return view('reset-password', ['token' => $token]);
+    } */
+
+    public function resetPassword(Request $request)
+    {
+        /* $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => ['required', 'confirmed', 'min:8', 'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/'],
+            'password.min' => 'The :attribute must be at least :min characters.',
+            'password.regex' => 'The password must contain at least one uppercase letter, one number, and one special character.',
+            'confirm_password.same' => 'The confirmation password does not match.',
+        ]); */
+
+        $status = Password::reset($request->only('email', 'password', 'confirm_password', 'token'), function ($user, $password) {
+            $user->password = bcrypt($password);
+            $user->save();
+        });
+
+        if ($status === Password::PASSWORD_RESET) {
+            return response()->json(['message' => 'Password has been successfully reset.']);
+        } else {
+            return response()->json(['message' => 'Failed to reset password.'], 500);
+        }
+    }
+    
 }
