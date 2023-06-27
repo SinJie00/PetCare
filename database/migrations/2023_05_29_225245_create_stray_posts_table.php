@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('adoption_animals', function (Blueprint $table) {
+        Schema::create('stray_posts', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 255);
+            $table->string('title');
             $table->text('description');
-            $table->integer('age');
-            $table->char('gender', 1);
-            $table->string('type', 255);
-            $table->string('status', 20);
+            $table->string('image');
+            $table->string('location');
+            $table->foreignId('users_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('adoption_animal');
+        Schema::dropIfExists('stray_posts');
     }
 };

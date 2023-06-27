@@ -11,14 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('adoption_animals', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 255);
-            $table->text('description');
-            $table->integer('age');
-            $table->char('gender', 1);
-            $table->string('type', 255);
-            $table->string('status', 20);
+        Schema::table('adoption_animals', function (Blueprint $table) {
             $table->timestamps();
         });
     }
@@ -28,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('adoption_animal');
+        Schema::table('adoption_animals', function (Blueprint $table) {
+            $table->dropTimestamps();
+        });
     }
 };
