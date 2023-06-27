@@ -87,7 +87,7 @@ export default {
         remain_quantity: '',
       },
       columns: [
-        { title: 'ID', data: 'id' },
+        //{ title: 'ID', data: 'id' },
         { title: 'Name', data: 'name' },
         {
           title: 'Image', data: 'image',
