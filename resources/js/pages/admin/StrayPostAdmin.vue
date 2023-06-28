@@ -120,27 +120,22 @@ export default {
                 const userName = response.data.user.name || 'N/A';
                 const email = response.data.user.email || 'N/A';
                 const phone = response.data.user.phone || 'N/A';
-                const address = response.data.user.address || 'N/A';
                 const nameColumn = table.cell(row, 5).node(); // Get the cell element
                 const emailColumn = table.cell(row, 7).node();
                 const phoneColumn = table.cell(row, 8).node();
-                const addressColumn = table.cell(row, 9).node();
 
                 $(nameColumn).text(userName); // Set the user name in the cell
                 $(emailColumn).text(email);
                 $(phoneColumn).text(phone);
-                $(addressColumn).text(address);
               })
               .catch(error => {
                 console.log('Error fetching user details:', error);
                 const nameColumn = table.cell(row, 5).node();
                 const emailColumn = table.cell(row, 7).node();
                 const phoneColumn = table.cell(row, 8).node();
-                const addressColumn = table.cell(row, 9).node();
                 $(nameColumn).text('N/A'); // Set N/A if an error occurred
                 $(emailColumn).text('N/A');
                 $(phoneColumn).text('N/A');
-                $(addressColumn).text('N/A');
               });
 
           $('.edit-btn').on('click', event => {
