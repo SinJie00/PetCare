@@ -123,6 +123,7 @@ export default {
 
             axios.get(`https://petcare-ec207baddaf0.herokuapp.com/api/adoptionanimals/${animalId}`)
               .then(response => {
+                alert(response.data.animal.name);
                 const animalName = response.data.animal.name || 'N/A';
                 const animalImage = response.data.animal.image || 'N/A';
                 const animalType = response.data.animal.type || 'N/A';
@@ -132,7 +133,7 @@ export default {
                 const animalPhoneColumn = table.cell(row, 4).node();
                 const animalAgeColumn = table.cell(row, 5).node();
 
-                $(animalNameColumn).text(animalName); // Set the user name in the cell
+                $(animalNameColumn).text(animalName); // Set the animal name in the cell
                 $(animalImageColumn).html(`<img src="${animalImage}" alt="Animal Image" width=100 height=100>`);
                 $(animalPhoneColumn).text(animalType);
                 $(animalAgeColumn).text(animalAge);

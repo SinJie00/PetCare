@@ -81,7 +81,26 @@ export default {
         },
         { title: 'Description', data: 'description' },
         { title: 'Location', data: 'location' },
-        { title: 'Author Id', data: 'users_id' },
+        {
+          title: 'Author Name',
+          render: function () {
+            // Return an empty string for immediate rendering
+            return '';
+          }
+        },
+        { title: 'Author ID', data: 'users_id' },
+        {
+          title: 'Author Email',
+          render: function () {
+            return '';
+          }
+        },
+        {
+          title: 'Author Phone',
+          render: function () {
+            return '';
+          }
+        },
         {
           title: 'Actions',
           render: function (data, type, row) {
@@ -94,6 +113,36 @@ export default {
       ],
       options: {
         drawCallback() {
+          const table = this.api();
+
+          axios.get(`https://petcare-ec207baddaf0.herokuapp.com/api/users/${userId}`)
+              .then(response => {
+                const userName = response.data.user.name || 'N/A';
+                const email = response.data.user.email || 'N/A';
+                const phone = response.data.user.phone || 'N/A';
+                const address = response.data.user.address || 'N/A';
+                const nameColumn = table.cell(row, 5).node(); // Get the cell element
+                const emailColumn = table.cell(row, 7).node();
+                const phoneColumn = table.cell(row, 8).node();
+                const addressColumn = table.cell(row, 9).node();
+
+                $(nameColumn).text(userName); // Set the user name in the cell
+                $(emailColumn).text(email);
+                $(phoneColumn).text(phone);
+                $(addressColumn).text(address);
+              })
+              .catch(error => {
+                console.log('Error fetching user details:', error);
+                const nameColumn = table.cell(row, 5).node();
+                const emailColumn = table.cell(row, 7).node();
+                const phoneColumn = table.cell(row, 8).node();
+                const addressColumn = table.cell(row, 9).node();
+                $(nameColumn).text('N/A'); // Set N/A if an error occurred
+                $(emailColumn).text('N/A');
+                $(phoneColumn).text('N/A');
+                $(addressColumn).text('N/A');
+              });
+
           $('.edit-btn').on('click', event => {
             const strayPostId = $(event.currentTarget).data('id');
             getStrayPostAndShowModal(strayPostId);
