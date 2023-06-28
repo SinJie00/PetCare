@@ -121,7 +121,7 @@ export default {
             const userId = rowData.users_id;
             const animalId = rowData.adoption_animals_id;
 
-            axios.get(`https://petcare-ec207baddaf0.herokuapp.com/adoptionanimals/${animalId}`)
+            axios.get(`https://petcare-ec207baddaf0.herokuapp.com/api/adoptionanimals/${animalId}`)
               .then(response => {
                 const animalName = response.data.animal.name || 'N/A';
                 const animalImage = response.data.animal.image || 'N/A';
