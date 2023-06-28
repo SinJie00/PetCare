@@ -1,6 +1,6 @@
 <template>
   <div class="container mt-5 mb-5">
-    <h1 class="text-center mb-5">Stray Post</h1>
+    <h1 class="text-center mb-5">Stray Post Hello</h1>
     <div class="modal" id="strayPostModal" refs="strayPostModal" tabindex="-1" role="dialog"> 
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
