@@ -77,14 +77,14 @@
             <label for="amount">Volunteer Type</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="radio" value="shelter" name="volunteer_type" id="shelter" checked
+            <input class="form-check-input" type="radio" value="Shelter" name="volunteer_type" id="shelter" checked
               v-model="volunteerType">
             <label class="form-check-label" for="shelter">
               Shelter
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="radio" value="rescue" id="rescue" name="volunteer_type"
+            <input class="form-check-input" type="radio" value="Rescue" id="rescue" name="volunteer_type"
               v-model="volunteerType">
             <label class="form-check-label" for="rescue">
               Rescue

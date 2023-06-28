@@ -46,6 +46,7 @@ export default {
         { title: 'Application Datetime', data: 'application_date' },
         { title: 'Application Approval Datetime', data: 'approval_date' },
         { title: 'Application Status', data: 'status' },
+        { title: 'Application Status', data: 'volunteer_type' },
         {
           title: 'Actions',
           render: function (data, type, row) {
