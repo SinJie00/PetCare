@@ -53,7 +53,7 @@
         actions, causes of action, judgments,
         damages, expenses and costs, including legal fees, which arise out of, result from, occur during or are connected
         in any manner with my volunteer's activities on behalf of SFFA.</li>
-      <li> If I should suffer an injury or illness while participating in any volunteer’s activities on behalf of SFFA, or
+      <li> If I should suffer an injury or illness while participating in any volunteer's activities on behalf of SFFA, or
         any activity associated thereof, I agree and authorize the representative or any person in charge of SFFA to use
         their discretion to have me treated at
         the nearest health care facility and hereby give consent, and I take full responsibility for that action and costs
