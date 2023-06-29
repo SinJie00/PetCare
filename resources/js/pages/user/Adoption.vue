@@ -9,7 +9,7 @@
           <div class="card-body text-center">
             <h4 class="card-title">{{ animal.name }}</h4>
             <p class="card-text">{{ animal.gender == 'M' ? 'Male' : 'Female' }}
-              <br>{{ animal.age + ' year old' }}
+              <br> {{ displayAge(animal.age) }}<!-- {{ animal.age + ' year old' }} -->
             </p>
             <!-- <p class="card-text">{{ animal.age +'year old'}}</p> -->
             <div class="d-flex justify-content-center" style="margin-top: -10px;">
@@ -25,10 +25,9 @@
         </div>
       </div>
     </div>
-    </div>
-    <!--modal for view more-->
-    <div class="modal fade" id="viewAnimalModal" aria-labelledby="animalModalLabel"
-       aria-hidden="true">
+  </div>
+  <!--modal for view more-->
+  <div class="modal fade" id="viewAnimalModal" aria-labelledby="animalModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -38,7 +37,8 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-md-6">
-              <img class="card-img-top" :src="selectedAnimal.image" alt="Animal image" width="100" height="250" style="object-fit:contain">
+              <img class="card-img-top" :src="selectedAnimal.image" alt="Animal image" width="100" height="250"
+                style="object-fit:contain">
             </div>
             <div class="col-md-6">
               <div class="mb-3">
@@ -47,29 +47,23 @@
               </div>
               <div class="mb-3">
                 <label class="form-label fw-bold">Age:</label>
-                <p>{{ selectedAnimal.age + ' year(s) old'}} </p>
+                <p>{{ displayAge(selectedAnimal.age) }}</p>
+                <!-- <p>{{ selectedAnimal.age + ' year(s) old'}} </p> -->
               </div>
               <div class="mb-3">
                 <label class="form-label fw-bold">Description:</label>
                 <p>{{ selectedAnimal.description }}</p>
               </div>
-              <!--
-              <div v-if="selectedAnimal.status === 'Available'"> 
-                <button type="button" class="btn btn-primary" @click="adoptAnimal">Adopt</button>
-               </div>
-              <div v-else>
-                <p>This animal is not available for adoption</p>
-              </div> -->
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-            data-bs-target="#adoptAnimalModal" @click="adoptAnimal(selectedAnimal.id)">Adopt</button>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#adoptAnimalModal"
+            @click="adoptAnimal(selectedAnimal.id)">Adopt</button>
         </div>
       </div>
     </div>
-</div>
+  </div>
 </template>
   
 <script>
@@ -85,6 +79,21 @@ export default {
     this.fetchAvailableAnimals();
   },
   methods: {
+    displayAge(ageInMonths) {
+      const months = ageInMonths;
+      if (months === 1) {
+        return '1 month old';
+      } else if (months > 12) {
+        const years = Math.floor(months / 12);
+        if (years === 1) {
+          return '1 year old';
+        } else {
+          return years + ' years old';
+        }
+      } else {
+        return months + ' months old';
+      }
+    },
     fetchAvailableAnimals() {
       axios.get('/api/available-animals')
         .then(response => {
@@ -95,11 +104,11 @@ export default {
           console.log(error);
         });
     },
-    viewAnimal(animal){
+    viewAnimal(animal) {
       this.selectedAnimal = animal;
       console.log(this.selectedAnimal);
     },
-    adoptAnimal(id){
+    adoptAnimal(id) {
       this.$swal({
         title: 'Confirmation',
         text: 'Are you sure you want to adopt this animal?',
@@ -108,26 +117,27 @@ export default {
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel'
       }).then(function (result) {
-          if (result.isConfirmed) {
-        console.log(id);
-        console.log(this.$store.state.auth.user.id);
-        axios.post('/api/adoptionapplications', {
-          users_id: this.$store.state.auth.user.id,
-          adoption_animals_id: id,
-          /* application_date: application_date *//* new Date().toISOString().split('T')[0] */
-        })
-        .then(response => {
-          console.log(response.data);
-          toastr.success(response.data.message);
-          // show success message and close modal
-        })
-        .catch(error => {
-          console.log(error);
-          // show error message
-        });
-      }});
-        // Close the modal
-        //$('#adoptAnimalModal').modal('hide');
+        if (result.isConfirmed) {
+          console.log(id);
+          console.log(this.$store.state.auth.user.id);
+          axios.post('/api/adoptionapplications', {
+            users_id: this.$store.state.auth.user.id,
+            adoption_animals_id: id,
+            /* application_date: application_date *//* new Date().toISOString().split('T')[0] */
+          })
+            .then(response => {
+              console.log(response.data);
+              toastr.success(response.data.message);
+              // show success message and close modal
+            })
+            .catch(error => {
+              console.log(error);
+              // show error message
+            });
+        }
+      });
+      // Close the modal
+      //$('#adoptAnimalModal').modal('hide');
     }
     /* getAdoptionAnimal(id) {
       axios.get(`/api/adoptionanimals/${id}`)
