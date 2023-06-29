@@ -9,7 +9,6 @@ import CKEditor from '@ckeditor/ckeditor5-vue';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
-import Vuelidate from 'vuelidate';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faUserCircle,faEnvelope } from '@fortawesome/free-solid-svg-icons'
@@ -18,6 +17,8 @@ import { faFacebook, faInstagram } from '@fortawesome/free-brands-svg-icons';/* 
 import 'vue3-toastify/dist/index.css'; */
 /* import Vue3Toastify, { ToastContainerOptions } from 'vue3-toastify'; */
 /* import Toaster from '@meforma/vue-toaster'; */
+import { useVuelidate } from '@vuelidate/core';
+import { required, email } from '@vuelidate/validators';
 import dt from 'datatables.net';
 import DataTable from 'datatables.net-vue3';
 /* import DataTablesLib from 'datatables.net';
@@ -64,7 +65,14 @@ const app = createApp(App/* , {
 app.component('data-table', DataTable);
 app.component('font-awesome-icon', FontAwesomeIcon); // Register the FontAwesomeIcon component globally
 app.use(VueSweetalert2);
-app.use(Vuelidate);
+//app.use(Vuelidate);
+app.use(useVuelidate);
+// Register global validators
+app.config.globalProperties.$validators = {
+  required,
+  email,
+  // Add more validators if needed
+};
 app.use(router);
 app.use(store);
 
