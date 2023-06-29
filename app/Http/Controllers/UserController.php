@@ -170,14 +170,23 @@ class UserController extends Controller
 
     public function resetPassword(Request $request)
     {
-        /* $request->validate([
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => ['required', 'confirmed', 'min:8', 'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/'],
+        $rules = [
+            'password' => ['required', 'string', 'min:8', 'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/'],
+            'confirm_password' => 'required_with:password|same:password',
+        ];
+
+        $messages = [
+            'required' => 'The password field is required.',
             'password.min' => 'The :attribute must be at least :min characters.',
             'password.regex' => 'The password must contain at least one uppercase letter, one number, and one special character.',
             'confirm_password.same' => 'The confirmation password does not match.',
-        ]); */
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
 
         $status = Password::reset($request->only('email', 'password', 'confirm_password', 'token'), function ($user, $password) {
             $user->password = bcrypt($password);
