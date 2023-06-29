@@ -82,8 +82,9 @@
               <div class="form-group mt-2">
                 <label for="image" class="form-label fw-bold">Image<span class="text-danger">*</span></label>
                 <input type="file" class="form-control" id="image" ref="imageInput" accept="image/*"
-                  v-on:change="handleImage" :class="{ 'is-invalid': v$.imageFile.$error && modalMode === 'create'}" />
-                <div v-if="v$.imageFile.$error && modalMode === 'create'" class="invalid-feedback">Image is required.</div>
+                  v-on:change="handleImage" :class="{ 'is-invalid': v$.imageFile.$error && modalMode === 'create' }" />
+                <div v-if="v$.imageFile.$error && modalMode === 'create'" class="invalid-feedback">Image is required.
+                </div>
                 <img v-if="imageUrl" :src="imageUrl" class="mt-2" width="150" height="150" />
               </div>
               <div class="form-group mt-4 row justify-content-end">
@@ -164,7 +165,23 @@ export default {
             }
           }
         },
-        { title: 'Age', data: 'age' },
+        {
+          title: 'Age', data: 'age',
+          render: function (data, type, row) {
+            if (ageInMonth === 1) {
+              return '1 month old';
+            } else if (ageInMonth > 12) {
+              const years = Math.floor(ageInMonth / 12);
+              if (ageInYear === 1) {
+                return '1 year old';
+              } else {
+                return ageInYear + ' years old';
+              }
+            } else {
+              return ageInMonth + ' months old';
+            }
+          }
+        },
         {
           title: 'Gender', data: 'gender',
           render: function (data, type, row) {
@@ -267,13 +284,13 @@ export default {
       };
       this.imageFile = null;
       this.$refs.imageInput.value = '';
-        // Reset all form validation errors
-        this.v$.$reset();
-      
+      // Reset all form validation errors
+      this.v$.$reset();
+
     },
     addAdoptionAnimal() {
       this.v$.$touch();
-      if (this.v$.$error){
+      if (this.v$.$error) {
         $('#animalModal').modal('show');
       }
       else {
@@ -309,8 +326,8 @@ export default {
       }
     },
     editAdoptionAnimal(id) {
-      this.v$.$touch(); 
-      console.log(this.v$.animal.$error);  
+      this.v$.$touch();
+      console.log(this.v$.animal.$error);
       if (this.v$.animal.$error) {
         $('#animalModal').modal('show');
       }
@@ -318,48 +335,48 @@ export default {
         if (this.ageUnit == "Year") {
           this.animal.age *= 12;
         }
-      console.log('edit');
-      console.log(id);
-      console.log(this.imageFile);
-      let editFormData = new FormData();
-      editFormData.append('name', this.animal.name);
-      editFormData.append('age', this.animal.age);
-      editFormData.append('gender', this.animal.gender);
-      editFormData.append('type', this.animal.type);
-      editFormData.append('status', this.animal.status);
-      editFormData.append('description', this.animal.description);
-      editFormData.append('_method', 'PUT');
-      if (this.imageFile) {
-        editFormData.append('image', this.imageFile, this.imageFile.name);
+        console.log('edit');
+        console.log(id);
         console.log(this.imageFile);
-      }
-      for (let [key, value] of editFormData.entries()) {
-        console.log(key, value);
-      }
-      /* const editFormData = new FormData();
-      editFormData.append('animal', this.animal); */
-      //formData.append('image', this.image);
-      axios.post(`/api/adoptionanimals/${id}`, editFormData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+        let editFormData = new FormData();
+        editFormData.append('name', this.animal.name);
+        editFormData.append('age', this.animal.age);
+        editFormData.append('gender', this.animal.gender);
+        editFormData.append('type', this.animal.type);
+        editFormData.append('status', this.animal.status);
+        editFormData.append('description', this.animal.description);
+        editFormData.append('_method', 'PUT');
+        if (this.imageFile) {
+          editFormData.append('image', this.imageFile, this.imageFile.name);
+          console.log(this.imageFile);
         }
-      }).then(response => {
-        const index = this.adoptionAnimals.findIndex(animal => animal.id === response.data.animal.id);
-        /* this.vm.$set(this.adoptionAnimals, index, response.data); */
-        /* Vue.set(this.adoptionAnimals, index, response.data); */
-        console.log(index);
-        console.log(response.data.message);
-        console.log(response.data.animal);
-        console.log(response.data.animal.image);
-        this.adoptionAnimals[index] = response.data.animal;
-        console.log('updated data');
-        console.log(this.adoptionAnimals[index]);
-        toastr.success(response.data.message);
-        this.resetForm();
-      })
-        .catch(error => {
-          console.error(error);
-        });
+        for (let [key, value] of editFormData.entries()) {
+          console.log(key, value);
+        }
+        /* const editFormData = new FormData();
+        editFormData.append('animal', this.animal); */
+        //formData.append('image', this.image);
+        axios.post(`/api/adoptionanimals/${id}`, editFormData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then(response => {
+          const index = this.adoptionAnimals.findIndex(animal => animal.id === response.data.animal.id);
+          /* this.vm.$set(this.adoptionAnimals, index, response.data); */
+          /* Vue.set(this.adoptionAnimals, index, response.data); */
+          console.log(index);
+          console.log(response.data.message);
+          console.log(response.data.animal);
+          console.log(response.data.animal.image);
+          this.adoptionAnimals[index] = response.data.animal;
+          console.log('updated data');
+          console.log(this.adoptionAnimals[index]);
+          toastr.success(response.data.message);
+          this.resetForm();
+        })
+          .catch(error => {
+            console.error(error);
+          });
       }
     },
     getAdoptionAnimal(id) {
@@ -395,17 +412,18 @@ export default {
         cancelButtonText: 'Cancel',
       }).then((result) => {
         if (result.isConfirmed) {
-        axios.delete(`/api/adoptionanimals/${id}`)
-          .then((response) => {
-            const index = this.adoptionAnimals.findIndex(animal => animal.id === id);
-            toastr.success(response.data.message);
-            this.adoptionAnimals.splice(index, 1);
-          })
-          .catch(error => {
-            console.error(error);
-          });
-        }});
-      },
+          axios.delete(`/api/adoptionanimals/${id}`)
+            .then((response) => {
+              const index = this.adoptionAnimals.findIndex(animal => animal.id === id);
+              toastr.success(response.data.message);
+              this.adoptionAnimals.splice(index, 1);
+            })
+            .catch(error => {
+              console.error(error);
+            });
+        }
+      });
+    },
     handleImage(event) {
       // Get the selected file
       this.imageFile = event.target.files[0];

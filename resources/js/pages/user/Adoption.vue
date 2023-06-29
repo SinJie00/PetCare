@@ -79,19 +79,18 @@ export default {
     this.fetchAvailableAnimals();
   },
   methods: {
-    displayAge(ageInMonths) {
-      const months = ageInMonths;
-      if (months === 1) {
+    displayAge(ageInMonth) {
+      if (ageInMonth === 1) {
         return '1 month old';
-      } else if (months > 12) {
-        const years = Math.floor(months / 12);
-        if (years === 1) {
+      } else if (ageInMonth  > 12) {
+        const years = Math.floor(ageInMonth / 12);
+        if (ageInYear === 1) {
           return '1 year old';
         } else {
-          return years + ' years old';
+          return ageInYear + ' years old';
         }
       } else {
-        return months + ' months old';
+        return ageInMonth + ' months old';
       }
     },
     fetchAvailableAnimals() {
