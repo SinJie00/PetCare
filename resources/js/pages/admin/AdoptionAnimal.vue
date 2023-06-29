@@ -168,10 +168,11 @@ export default {
         {
           title: 'Age', data: 'age',
           render: function (data, type, row) {
+            const ageInMonth = data;
             if (ageInMonth === 1) {
               return '1 month old';
             } else if (ageInMonth > 12) {
-              const years = Math.floor(ageInMonth / 12);
+              const ageInYear = Math.floor(ageInMonth / 12);
               if (ageInYear === 1) {
                 return '1 year old';
               } else {
