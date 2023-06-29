@@ -68,6 +68,10 @@ class StrayPostController extends Controller
         $strayPost->title = $request->input('title');
         $strayPost->description = $request->input('description');
         $strayPost->location = $request->input('location');
+        if ($request->has('latitude') && $request->has('longitude')) {
+            $strayPost->latitude = $request->input('latitude');
+            $strayPost->longitude = $request->input('longitude');
+        }
 
         if ($request->hasFile('image')) {
             // Delete old image if exists
@@ -96,7 +100,7 @@ class StrayPostController extends Controller
     {
         $strayPost= StrayPost::findOrFail($id);
         $strayPost->delete();
-        return response()->json(['message' => 'Stray Post deleted successfully']);
+        return response()->json(['message' => 'Stray post deleted successfully']);
     }
 
 }
