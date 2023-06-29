@@ -30,7 +30,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title">Make a Donation</h2>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="resetForm"></button>
         </div>
         <div class="modal-body">
           <form @submit.prevent="makeDonation">
@@ -57,7 +57,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="resetForm">Cancel</button>
           <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#summaryModal"
             @click="makeDonation" :disabled="!isFormValid">Make Payment</button>
         </div>
@@ -69,7 +69,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title">Transaction Summary</h2>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="resetForm"></button>
         </div>
         <div class="modal-body">
           <p>Amount: RM{{ donationAmount }}</p>
@@ -90,7 +90,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title">Payment Transaction</h2>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="resetForm"></button>
         </div>
         <div class="modal-body">
           <div class="alert alert-success text-center mt-3">Payment has been made successfully</div>
