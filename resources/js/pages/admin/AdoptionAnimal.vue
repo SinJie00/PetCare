@@ -1,81 +1,92 @@
 <template>
   <div class="container mt-5 mb-5">
     <h1 class="text-center mb-5">{{ title }}</h1>
-    <!-- <div class="row">
-    <div class="text-right"> -->
     <div class="bg-light clearfix">
       <button class="btn btn-primary mb-3 float-right" data-bs-toggle="modal" data-bs-target="#animalModal"
-        @click="openCreateModal">Add Adoption Animal</button> <!-- @click="showCreateModal = true" -->
+        @click="openCreateModal">Add Adoption Animal</button>
     </div>
-    <!-- </div>
-    </div> -->
-    <div class="modal" id="animalModal" refs="animalModal" tabindex="-1" role="dialog"> <!-- v-if="showCreateModal" -->
+    <div class="modal" id="animalModal" refs="animalModal" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h2 v-if="modalMode === 'create'" class="modal-title">Create Adoption Animal</h2>
             <h2 v-else-if="modalMode === 'edit'" class="modal-title">Edit Adoption Animal</h2>
-            <!-- <h5 class="modal-title">Create Adoption Animal</h5> -->
             <button type="button" class="btn btn-close" data-bs-dismiss="modal" @click="resetForm"
               aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form> <!-- @submit.prevent="addAdoptionAnimal" -->
+            <form>
               <div class="form-group">
-                <label for="name">Name*</label>
-                <input type="text" class="form-control" id="name" v-model="animal.name" required>
+                <label for="name" class="form-label fw-bold">Name<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="name" v-model="animal.name" required
+                  :class="{ 'is-invalid': v$.animal.name.$error }">
+                <div v-if="v$.animal.name.$error" class="invalid-feedback">Name is required.</div>
               </div>
-              <div class="form-group">
-                <label for="age">Age*</label>
-                <input type="number" class="form-control" id="age" min="1" v-model="animal.age" required>
+              <div class="form-group mt-2">
+                <label for="age" class="form-label fw-bold">Age<span class="text-danger">*</span></label>
+                <div class="row">
+                  <div class="col-md-6">
+                    <input type="number" class="form-control" id="age" min="1" v-model="animal.age" required
+                      :class="{ 'is-invalid': v$.animal.age.$error }">
+                    <div v-if="v$.animal.age.$error" class="invalid-feedback">Age is required.</div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="input-group">
+                      <select class="form-select" v-model="ageUnit" required :class="{ 'is-invalid': v$.ageUnit.$error }">
+                        <!-- <option value="" >-- Select Age Unit --</option> -->
+                        <option value="Month">Month</option>
+                        <option value="Year">Year</option>
+                      </select>
+                      <div v-if="v$.ageUnit.$error" class="invalid-feedback">Age unit is required.</div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="gender">Gender*</label>
-                <select class="form-control" id="gender" v-model="animal.gender" required>
+              <div class="form-group mt-2">
+                <label for="gender" class="form-label fw-bold">Gender<span class="text-danger">*</span></label>
+                <select class="form-control" id="gender" v-model="animal.gender" required
+                  :class="{ 'is-invalid': v$.animal.gender.$error }">
                   <option value="">-- Select Gender --</option>
                   <option value="M">Male</option>
                   <option value="F">Female</option>
                 </select>
+                <div v-if="v$.animal.gender.$error" class="invalid-feedback">Gender is required.</div>
               </div>
-              <div class="form-group">
-                <label for="status">Status*</label>
-                <select class="form-control" id="status" v-model="animal.status" required>
+              <div class="form-group mt-2">
+                <label for="status" class="form-label fw-bold">Status<span class="text-danger">*</span></label>
+                <select class="form-control" id="status" v-model="animal.status" required
+                  :class="{ 'is-invalid': v$.animal.status.$error }">
                   <option value="">-- Select Status --</option>
                   <option value="Available">Available</option>
                   <option value="Adopted">Adopted</option>
                 </select>
+                <div v-if="v$.animal.status.$error" class="invalid-feedback">Status is required.</div>
               </div>
-              <div class="form-group">
-                <label for="type">Type*</label>
-                <select class="form-control" id="type" v-model="animal.type" required>
+              <div class="form-group mt-2">
+                <label for="type" class="form-label fw-bold">Type<span class="text-danger">*</span></label>
+                <select class="form-control" id="type" v-model="animal.type" required
+                  :class="{ 'is-invalid': v$.animal.type.$error }">
                   <option value="">-- Select Type --</option>
                   <option value="Dog">Dog</option>
                   <option value="Cat">Cat</option>
                   <option value="Others">Others</option>
                 </select>
+                <div v-if="v$.animal.type.$error" class="invalid-feedback">Type is required.</div>
               </div>
-              <div class="form-group">
-                <label for="description">Description</label>
-                <textarea class="form-control" id="description" v-model="animal.description" required></textarea>
+              <div class="form-group mt-2">
+                <label for="description" class="form-label fw-bold">Description<span class="text-danger">*</span></label>
+                <textarea class="form-control" id="description" v-model="animal.description" required
+                  :class="{ 'is-invalid': v$.animal.description.$error }"></textarea>
+                <div v-if="v$.animal.description.$error" class="invalid-feedback">Description is required.</div>
               </div>
-              <div class="form-group">
-                <label for="image">Image*</label>
+              <div class="form-group mt-2">
+                <label for="image" class="form-label fw-bold">Image<span class="text-danger">*</span></label>
                 <input type="file" class="form-control" id="image" ref="imageInput" accept="image/*"
-                  v-on:change="handleImage" />
-                <!-- <label class="custom-file-label" for="image">{{ animal.image ? animal.image.split('/').pop() : 'Choose file' }}</label> -->
-                <img v-if="imageUrl" :src="imageUrl" class="mt-2" style="max-width: 200px;" />
+                  v-on:change="handleImage" :class="{ 'is-invalid': v$.imageFile.$error && modalMode === 'create'}" />
+                <div v-if="v$.imageFile.$error && modalMode === 'create'" class="invalid-feedback">Image is required.</div>
+                <img v-if="imageUrl" :src="imageUrl" class="mt-2" width="150" height="150" />
               </div>
-              <!-- <div class="form-group">
-                <label for="image">Image*</label>
-                <div class="custom-file">
-                  <input type="file" class="custom-file-input" id="image" ref="imageInput" accept="image/*"
-                    v-on:change="handleImage" />
-                  <label class="custom-file-label" for="image">{{ animal.image ? animal.image.split('/').pop() : 'Choose file' }}</label>
-                </div>
-                <img v-if="imageUrl" :src="imageUrl" class="mt-2" style="max-width: 200px;" />
-              </div> -->
               <div class="form-group mt-4 row justify-content-end">
-                <!-- <button type="submit" data-bs-dismiss="modal" class="btn btn-primary">{{ submitButton }}</button> -->
                 <div class="col-auto mr-2">
                   <button v-if="modalMode === 'create'" data-bs-dismiss="modal" type="submit" class="btn btn-primary"
                     @click.prevent="addAdoptionAnimal">Create</button>
@@ -99,21 +110,37 @@
 </template>
 
 <script>
-/* import bootstrap from 'bootstrap'; */
+import { useVuelidate } from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 export default {
   name: 'AdoptionAnimal',
+  setup() {
+    const v$ = useVuelidate();
+    return { v$ };
+  },
+  validations() {
+    return {
+      imageFile: { required },
+      ageUnit: { required },
+      animal: {
+        name: { required },
+        age: { required },
+        gender: { required },
+        type: { required },
+        description: { required },
+        status: { required },
+        //image: { required },
+      },
+    }
+  },
   data() {
     const vm = this;
     return {
       title: 'Adoption Animals',
-      /* showModal: false, */
       adoptionAnimals: [],
       modalMode: '',
       imageFile: '',
-      /* imageUrl: '', */
-      /* formTitle: 'Add Animal', */
-      /* submitButton: 'Save', */
-      /* cancelButton: 'Cancel', */
+      ageUnit: 'Month',
       animal: {
         name: '',
         age: '',
@@ -121,6 +148,7 @@ export default {
         type: '',
         description: '',
         status: '',
+        image: '',
       },
       columns: [
         { title: 'ID', data: 'id' },
@@ -190,6 +218,7 @@ export default {
       if (this.imageFile) {
         return URL.createObjectURL(this.imageFile);
       } else if (this.animal.image) {
+        console.log('yes had image');
         return this.animal.image;
       } else {
         return null;
@@ -212,7 +241,7 @@ export default {
       this.modalMode = 'edit';
     },
     getAdoptionAnimals() {
-      axios.get('https://petcare-ec207baddaf0.herokuapp.com/api/adoptionanimals')
+      axios.get('/api/adoptionanimals')
         .then(response => {
           this.adoptionAnimals = response.data;
         })
@@ -238,42 +267,57 @@ export default {
       };
       this.imageFile = null;
       this.$refs.imageInput.value = '';
+        // Reset all form validation errors
+        this.v$.$reset();
+      
     },
     addAdoptionAnimal() {
-      /* if (this.modalMode === 'create') { */
-      /* this.modalMode = 'create'; */
-      console.log('save animal');
-      console.log(this.animal);
-      let formData = new FormData();
-      formData.append('name', this.animal.name);
-      formData.append('age', this.animal.age);
-      formData.append('gender', this.animal.gender);
-      formData.append('type', this.animal.type);
-      formData.append('status', this.animal.status);
-      formData.append('description', this.animal.description);
-      formData.append('image', this.imageFile);
-      console.log(this.imageFile);
-      /* for (let [key, value] of formData.entries()) {
-        console.log(key, value);
-      } */
-      axios.post('https://petcare-ec207baddaf0.herokuapp.com/api/adoptionanimals', formData)
-        .then(response => {
-          console.log('api ok');
-          console.log(response.data);
-          this.adoptionAnimals.push(response.data);
-          this.resetForm();
-          toastr.success('Adoption animal created successfully');
-        })
-        .catch(error => {
-          console.error(error);
-          toastr.error('Adoption animal created unsuccessfully');
-        });
+      this.v$.$touch();
+      if (this.v$.$error){
+        $('#animalModal').modal('show');
+      }
+      else {
+        if (this.ageUnit == "Year") {
+          this.animal.age *= 12;
+        }
+        console.log('save animal');
+        console.log(this.animal);
+        let formData = new FormData();
+        formData.append('name', this.animal.name);
+        formData.append('age', this.animal.age);
+        formData.append('gender', this.animal.gender);
+        formData.append('type', this.animal.type);
+        formData.append('status', this.animal.status);
+        formData.append('description', this.animal.description);
+        formData.append('image', this.imageFile);
+        console.log(this.imageFile);
+        /* for (let [key, value] of formData.entries()) {
+          console.log(key, value);
+        } */
+        axios.post('/api/adoptionanimals', formData)
+          .then(response => {
+            console.log('api ok');
+            console.log(response.data);
+            this.adoptionAnimals.push(response.data);
+            this.resetForm();
+            toastr.success('Adoption animal created successfully');
+          })
+          .catch(error => {
+            console.error(error);
+            toastr.error('Adoption animal created unsuccessfully');
+          });
+      }
     },
     editAdoptionAnimal(id) {
-      /* if (this.imageFile) {
-        this.animal.image = this.imageFile;
-        console.log(this.animal);
-      } */
+      this.v$.$touch(); 
+      console.log(this.v$.animal.$error);  
+      if (this.v$.animal.$error) {
+        $('#animalModal').modal('show');
+      }
+      else {
+        if (this.ageUnit == "Year") {
+          this.animal.age *= 12;
+        }
       console.log('edit');
       console.log(id);
       console.log(this.imageFile);
@@ -295,27 +339,28 @@ export default {
       /* const editFormData = new FormData();
       editFormData.append('animal', this.animal); */
       //formData.append('image', this.image);
-      axios.post(`https://petcare-ec207baddaf0.herokuapp.com/api/adoptionanimals/${id}`, editFormData , {
+      axios.post(`/api/adoptionanimals/${id}`, editFormData, {
         headers: {
-        'Content-Type': 'multipart/form-data'
-        }  
+          'Content-Type': 'multipart/form-data'
+        }
       }).then(response => {
-          const index = this.adoptionAnimals.findIndex(animal => animal.id === response.data.animal.id);
-          /* this.vm.$set(this.adoptionAnimals, index, response.data); */
-          /* Vue.set(this.adoptionAnimals, index, response.data); */
-          console.log(index);
-          console.log(response.data.message);
-          console.log(response.data.animal);
-          console.log(response.data.animal.image);
-          this.adoptionAnimals[index] = response.data.animal;
-          console.log('updated data');
-          console.log(this.adoptionAnimals[index]);
-          toastr.success(response.data.message);
-          this.resetForm();
-        })
+        const index = this.adoptionAnimals.findIndex(animal => animal.id === response.data.animal.id);
+        /* this.vm.$set(this.adoptionAnimals, index, response.data); */
+        /* Vue.set(this.adoptionAnimals, index, response.data); */
+        console.log(index);
+        console.log(response.data.message);
+        console.log(response.data.animal);
+        console.log(response.data.animal.image);
+        this.adoptionAnimals[index] = response.data.animal;
+        console.log('updated data');
+        console.log(this.adoptionAnimals[index]);
+        toastr.success(response.data.message);
+        this.resetForm();
+      })
         .catch(error => {
           console.error(error);
         });
+      }
     },
     getAdoptionAnimal(id) {
       console.log('1');
@@ -325,7 +370,7 @@ export default {
       this.submitButton = 'Update'; */
       /* console.log(id); */
       return new Promise((resolve, reject) => {
-        axios.get(`https://petcare-ec207baddaf0.herokuapp.com/api/adoptionanimals/${id}`)
+        axios.get(`/api/adoptionanimals/${id}`)
           .then(response => {
             console.log(this);
             /* this.animal = response.data; */
@@ -341,9 +386,16 @@ export default {
       });
     },
     deleteAdoptionAnimal(id) {
-      console.log('hi');
-      if (confirm('Are you sure you want to delete this animal?')) {
-        axios.delete(`https://petcare-ec207baddaf0.herokuapp.com/api/adoptionanimals/${id}`)
+      this.$swal({
+        title: 'Confirmation',
+        text: 'Are you sure you want to delete this animal?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+      }).then((result) => {
+        if (result.isConfirmed) {
+        axios.delete(`/api/adoptionanimals/${id}`)
           .then((response) => {
             const index = this.adoptionAnimals.findIndex(animal => animal.id === id);
             toastr.success(response.data.message);
@@ -352,8 +404,8 @@ export default {
           .catch(error => {
             console.error(error);
           });
-      }
-    },
+        }});
+      },
     handleImage(event) {
       // Get the selected file
       this.imageFile = event.target.files[0];
@@ -373,7 +425,7 @@ export default {
       formData.append('folder', 'adoption_animals'); //
 
       // Send the file to the server using axios
-      axios.post('https://petcare-ec207baddaf0.herokuapp.com/api/upload-image', formData)
+      axios.post('/api/upload-image', formData)
         .then(response => {
           // Handle the response from the server
           console.log(response.data);

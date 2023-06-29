@@ -3,9 +3,9 @@
     <h1 class="text-center mb-5">Product In Need</h1>
     <div class="bg-light clearfix">
       <button class="btn btn-primary mb-3 float-right" data-bs-toggle="modal" data-bs-target="#productModal"
-        @click="openCreateModal">Add Product In Need</button> 
+        @click="openCreateModal">Add Product In Need</button>
     </div>
-    <div class="modal" id="productModal" refs="productModal" tabindex="-1" role="dialog"> 
+    <div class="modal" id="productModal" refs="productModal" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -15,38 +15,66 @@
               aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form> 
+            <form>
               <div class="form-group">
-                <label for="name">Name*</label>
-                <input type="text" class="form-control" id="name" v-model="product.name" required>
+                <label for="name" class="form-label fw-bold">Name<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="name" v-model="product.name" required
+                  :class="{ 'is-invalid': v$.product.name.$error }">
+                <div v-if="v$.product.name.$error" class="invalid-feedback">Name is required.</div>
               </div>
-              <div class="form-group">
-                <label for="price">Price*</label>
-                <input type="number" class="form-control" id="price" min="1" v-model="product.price" required>
+              <div class="form-group mt-2">
+                <label for="price" class="form-label fw-bold">Price<span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="price" v-model="product.price" required
+                  @input="checkTwoDecimal" :class="{ 'is-invalid': v$.product.price.$error }">
+                  <div v-for="(error, index) of v$.product.price.$errors" :key="index"  class="invalid-feedback">
+                    <div v-if="error.$validator == 'required'">Price is required.</div>
+                    <div v-else-if="error.$validator == 'minValue'">The price should be at least RM0.01.</div>
+                  </div>
               </div>
-              <div class="form-group">
-                <label for="required_quantity">Required Quantity*</label>
-                <input type="number" class="form-control" id="required_quantity" v-model="product.required_quantity" required>
+              <div class="form-group mt-2">
+                <label for="required_quantity" class="form-label fw-bold">Required Quantity<span
+                    class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="required_quantity" v-model="product.required_quantity"
+                  required :class="{ 'is-invalid': v$.product.required_quantity.$error }">
+                  <div v-for="(error, index) of v$.product.required_quantity.$errors" :key="index"  class="invalid-feedback">
+                    <div v-if="error.$validator == 'required'">Required quantity is required.</div>
+                    <div v-else-if="error.$validator == 'minValue'">The required quantity should be at least 1.</div>
+                  </div>
               </div>
-              <div class="form-group">
-                <label for="remain_quantity">Remain Quantity*</label>
-                <input type="number" class="form-control" id="remain_quantity" v-model="product.remain_quantity" required>
+              <div class="form-group mt-2">
+                <label for="remain_quantity" class="form-label fw-bold">Remain Quantity<span
+                    class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="remain_quantity" v-model="product.remain_quantity" required :class="{ 'is-invalid': v$.product.remain_quantity.$error }">
+                <div v-for="(error, index) of v$.product.remain_quantity.$errors" :key="index"  class="invalid-feedback">
+                    <div v-if="error.$validator == 'required'">Remain quantity is required.</div>
+                    <div v-else-if="error.$validator == 'minValue'">The remain quantity should be equal or more than 0.</div>
+                  </div>
               </div>
-              <div class="form-group">
-                <label for="link">Link*</label>
-                <input type="text" class="form-control" id="link" v-model="product.link" required>
+              <div class="form-group mt-2">
+                <label for="link" class="form-label fw-bold">Link<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="link" v-model="product.link" required
+                  :class="{ 'is-invalid': v$.product.link.$error }">
+                <div v-for="(error, index) of v$.product.link.$errors" :key="index"  class="invalid-feedback">
+                    <div v-if="error.$validator == 'required'">Link is required.</div>
+                    <div v-else-if="error.$validator == 'url'">A valid link is required.</div>
+                  </div>
               </div>
-              <div class="form-group">
-                <label for="description">Description</label>
-                <textarea class="form-control" id="description" v-model="product.description" required></textarea>
+              <div class="form-group mt-2">
+                <label for="description" class="form-label fw-bold">Description<span class="text-danger">*</span></label>
+                <textarea class="form-control" id="description" v-model="product.description" required
+                  :class="{ 'is-invalid': v$.product.description.$error }"></textarea>
+                <div v-if="v$.product.description.$error" class="invalid-feedback">Description is required.</div>
               </div>
-              <div class="form-group">
-                <label for="image">Image*</label>
-                <input type="file" class="form-control" id="image" ref="imageInput" accept="image/*" v-on:change="handleImage" />
-                <img v-if="imageUrl" :src="imageUrl" class="mt-2" style="max-width: 200px;" />
+              <div class="form-group mt-2">
+                <label for="image" class="form-label fw-bold">Image<span class="text-danger">*</span></label>
+                <input type="file" class="form-control" id="image" ref="imageInput" accept="image/*"
+                  v-on:change="handleImage" :class="{ 'is-invalid': v$.imageFile.$error && modalMode === 'create' }" />
+                <div v-if="v$.imageFile.$error && modalMode === 'create'" class="invalid-feedback">Image is required.
+                </div>
+                <img v-if="imageUrl" :src="imageUrl" class="mt-2" width="150" height="150" />
               </div>
               <div class="form-group mt-4 row justify-content-end">
-                <div class="col-auto mr-2">
+                <div class="col-auto">
                   <button v-if="modalMode === 'create'" data-bs-dismiss="modal" type="submit" class="btn btn-primary"
                     @click.prevent="addProduct">Create</button>
                   <button v-else-if="modalMode === 'edit'" data-bs-dismiss="modal" type="submit" class="btn btn-primary"
@@ -62,16 +90,34 @@
       </div>
     </div>
     <div>
-      <data-table class="table table-bordered table-responsive table-striped" width="100%" :data="products" :columns="columns"
+      <data-table class="table table-bordered table-responsive" width="100%" :data="products" :columns="columns"
         :options="options"></data-table>
     </div>
   </div>
 </template>
 
 <script>
-/* import bootstrap from 'bootstrap'; */
+import { useVuelidate } from '@vuelidate/core';
+import { required, minValue, url } from '@vuelidate/validators';
 export default {
   name: 'ProductInNeedAdmin',
+  setup() {
+    const v$ = useVuelidate();
+    return { v$ };
+  },
+  validations() {
+    return {
+      imageFile: { required },
+      product: {
+        name: { required },
+        price: { required, minValue: minValue(0.01), },
+        required_quantity: { required, minValue: minValue(1) },
+        link: { required, url },
+        description: { required },
+        remain_quantity: { required, minValue: minValue(0) },
+      },
+    }
+  },
   data() {
     const vm = this;
     return {
@@ -87,7 +133,7 @@ export default {
         remain_quantity: '',
       },
       columns: [
-        //{ title: 'ID', data: 'id' },
+        { title: 'ID', data: 'id' },
         { title: 'Name', data: 'name' },
         {
           title: 'Image', data: 'image',
@@ -100,7 +146,8 @@ export default {
             }
           }
         },
-        { title: 'Price', data: 'price' ,
+        {
+          title: 'Price', data: 'price',
           render: function (data, type, row) {
             if (data) {
               return 'RM' + data;
@@ -108,14 +155,16 @@ export default {
             else {
               return '';
             }
-          }},
-        { title: 'Required Quantity', data: 'required_quantity'},
-        { title: 'Remain Quantity', data: 'remain_quantity'},
+          }
+        },
+        { title: 'Required Quantity', data: 'required_quantity' },
+        { title: 'Remain Quantity', data: 'remain_quantity' },
         { title: 'Description', data: 'description' },
-        { title: 'Link', data: 'link',
+        {
+          title: 'Link', data: 'link',
           render: function (data, type, row) {
-              return `
-              <a target="_blank" href="${ data }">${ data }</a>
+            return `
+              <a target="_blank" href="${data}">${data}</a>
               `;
           }
         },
@@ -168,6 +217,14 @@ export default {
     this.getProducts();
   },
   methods: {
+    checkTwoDecimal() {
+      const priceString = this.product.price.toString();
+      const pointPos = priceString.indexOf('.');
+      if (pointPos !== -1) {
+        var maxlengthAmount = pointPos + 3;
+        this.product.price = parseFloat(priceString.slice(0, maxlengthAmount));
+      }
+    },
     openCreateModal() {
       this.modalMode = 'create';
     },
@@ -175,7 +232,7 @@ export default {
       this.modalMode = 'edit';
     },
     getProducts() {
-      axios.get('https://petcare-ec207baddaf0.herokuapp.com/api/products')
+      axios.get('/api/products')
         .then(response => {
           this.products = response.data;
         })
@@ -196,32 +253,54 @@ export default {
       this.imageFile = null;
       this.imageUrl = '';
       this.$refs.imageInput.value = '';
+      // Reset all form validation errors
+      this.v$.$reset();
     },
     addProduct() {
-      console.log('save product');
-      console.log(this.product);
-      let formData = new FormData();
-      formData.append('name', this.product.name);
-      formData.append('price', this.product.price);
-      formData.append('required_quantity', this.product.required_quantity);
-      formData.append('link', this.product.link);
-      formData.append('remain_quantity', this.product.remain_quantity);
-      formData.append('description', this.product.description);
-      formData.append('image', this.imageFile);
-      console.log(this.imageFile);
-      axios.post('https://petcare-ec207baddaf0.herokuapp.com/api/products', formData)
-        .then(response => {
-          console.log('api ok');
-          console.log(response.data);
-          this.products.push(response.data);
-          this.resetForm();
-          toastr.success('Product created successfully');
-        })
-        .catch(error => {
-          console.error(error);
-        });
+      this.v$.$touch();
+      if (this.v$.$error) {
+        $('#productModal').modal('show');
+      }
+      else {
+        console.log('save product');
+        console.log(this.product);
+        let formData = new FormData();
+        formData.append('name', this.product.name);
+        formData.append('price', this.product.price);
+        formData.append('required_quantity', this.product.required_quantity);
+        formData.append('link', this.product.link);
+        formData.append('remain_quantity', this.product.remain_quantity);
+        formData.append('description', this.product.description);
+        formData.append('image', this.imageFile);
+        console.log(this.imageFile);
+        axios.post('/api/products', formData)
+          .then(response => {
+            console.log('api ok');
+            console.log(response.data);
+            this.products.push(response.data);
+            this.resetForm();
+            toastr.success('Product created successfully');
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
     },
     editProduct(id) {
+      this.v$.$touch();
+      console.log(this.v$.$error);
+      for (const error of this.v$.$errors) { 
+        // Access the details of the error object
+        console.log(error.$validator); // The validator that failed
+        console.log(error.$message); // The error message
+        console.log(error.$params); // The parameters of the validator
+        // ...
+    }
+
+      if (this.v$.product.$error) {
+        $('#productModal').modal('show');
+      }
+      else {
       console.log('edit');
       console.log(id);
       console.log(this.imageFile);
@@ -240,30 +319,31 @@ export default {
       for (let [key, value] of editFormData.entries()) {
         console.log(key, value);
       }
-      axios.post(`https://petcare-ec207baddaf0.herokuapp.com/api/products/${id}`, editFormData , {
+      axios.post(`/api/products/${id}`, editFormData, {
         headers: {
-        'Content-Type': 'multipart/form-data'
-        }  
+          'Content-Type': 'multipart/form-data'
+        }
       }).then(response => {
-          const index = this.products.findIndex(product => product.id === response.data.product.id);
-          console.log(index);
-          console.log(response.data.message);
-          console.log(response.data.product);
-          console.log(response.data.product.image);
-          this.products[index] = response.data.product;
-          console.log('updated data');
-          console.log(this.products[index]);
-          toastr.success(response.data.message);
-          this.resetForm();
-        })
+        const index = this.products.findIndex(product => product.id === response.data.product.id);
+        console.log(index);
+        console.log(response.data.message);
+        console.log(response.data.product);
+        console.log(response.data.product.image);
+        this.products[index] = response.data.product;
+        console.log('updated data');
+        console.log(this.products[index]);
+        toastr.success(response.data.message);
+        this.resetForm();
+      })
         .catch(error => {
           console.error(error);
         });
+      }
     },
     getProduct(id) {
       this.modalMode = 'edit';
       return new Promise((resolve, reject) => {
-        axios.get(`https://petcare-ec207baddaf0.herokuapp.com/api/products/${id}`)
+        axios.get(`/api/products/${id}`)
           .then(response => {
             console.log(this);
             /* this.product = response.data; */
@@ -279,17 +359,26 @@ export default {
       });
     },
     deleteProduct(id) {
-      if (confirm('Are you sure you want to delete this product?')) {
-        axios.delete(`https://petcare-ec207baddaf0.herokuapp.com/api/products/${id}`)
-          .then(response => {
-            const index = this.products.findIndex(product => product.id === id);
-            this.products.splice(index, 1);
-            toastr.success(response.data.message);
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      }
+      this.$swal({
+        title: 'Confirmation',
+        text: 'Are you sure you want to delete this product?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios.delete(`/api/products/${id}`)
+            .then(response => {
+              const index = this.products.findIndex(product => product.id === id);
+              this.products.splice(index, 1);
+              toastr.success(response.data.message);
+            })
+            .catch(error => {
+              console.error(error);
+            });
+        }
+      });
     },
     handleImage(event) {
       this.imageFile = event.target.files[0];
@@ -297,7 +386,7 @@ export default {
   }
 }
 </script>
-       
+
 
 
   
