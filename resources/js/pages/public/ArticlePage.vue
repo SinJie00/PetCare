@@ -33,7 +33,7 @@ export default {
             // Fetch the article from the backend API based on the route parameter
             console.log('hi');
             const articleId = this.$route.params.articleId;
-            axios.get(`https://petcare-ec207baddaf0.herokuapp.com/api/articles/${articleId}`)
+            axios.get(`/api/articles/${articleId}`)
                 .then(response => {
                     console.log(response.data);
                     this.article = response.data.article;

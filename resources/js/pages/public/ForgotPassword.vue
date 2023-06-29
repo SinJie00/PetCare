@@ -31,7 +31,7 @@ export default {
   methods: {
     submitForm() {
       // Make a POST request to your Laravel API endpoint to initiate the password reset process
-      axios.post("https://petcare-ec207baddaf0.herokuapp.com/api/forgot-password", {
+      axios.post("/api/forgot-password", {
         email: this.email,
       })
         .then(() => {
