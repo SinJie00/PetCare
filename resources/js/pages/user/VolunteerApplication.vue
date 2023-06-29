@@ -123,7 +123,7 @@ export default {
     applyVolunteer() {
       console.log(this.$store.state.auth.user.id);
       console.log(this.volunteerType);
-      axios.post('https://petcare-ec207baddaf0.herokuapp.com/api/volunteerapplications', {
+      axios.post('/api/volunteerapplications', {
         users_id: this.$store.state.auth.user.id,
         volunteer_type: this.volunteerType,
       })

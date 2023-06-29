@@ -26,76 +26,88 @@
     </div>
   </div>
   <div class="modal" id="donationModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Make a Donation</h2>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form @submit.prevent="makeDonation">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Make a Donation</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form @submit.prevent="makeDonation">
             <div class="form-group">
-              <label for="amount">Amount:</label>
-              <input type="number" class="form-control" id="amount" v-model="donationAmount" required>
+              <label for="amount" class="form-label fw-bold">Amount</label>
+              <input type="number" class="form-control" id="amount" v-model="donationAmount" @input="checkTwoDecimal"
+                :class="{ 'is-invalid': !isValidAmount }" min="1" step="any" required>
+              <div class="invalid-feedback">
+                Please enter a valid amount equal or more than RM1.
+              </div>
             </div>
-            <div class="form-group">
-              <label for="payment-method">Payment Method:</label>
-              <select class="form-control" id="payment-method" v-model="selectedPaymentMethod">
+            <div class="form-group mt-2">
+              <label for="payment-method" class="form-label fw-bold">Payment Method</label>
+              <select class="form-control" id="payment-method" v-model="selectedPaymentMethod"
+                :class="{ 'is-invalid': !isValidPaymentMethod }" required>
+                <option value="">--Select Payment Method--</option>
                 <option value="Credit Card">Credit Card</option>
                 <option value="Bank Transfer">Bank Transfer</option>
               </select>
+              <div class="invalid-feedback">
+                Please select a payment method.
+              </div>
             </div>
           </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="submit" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#summaryModal">Make Payment</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal" id="summaryModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Transaction Summary</h2>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>Amount: RM{{ donationAmount }}</p>
-        <p>Payment Method: {{ selectedPaymentMethod }}</p>
-        <p>Payment Purpose: Donation to Meefah Homeless Animals Shelter</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#donationModal">Back</button>
-        <button class="btn btn-primary" @click="processPayment" data-bs-toggle="modal" data-bs-target="#paymentModal">Proceed Payment</button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#summaryModal"
+            @click="makeDonation" :disabled="!isFormValid">Make Payment</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<div class="modal" id="paymentModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Payment Transaction</h2>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="alert alert-success text-center mt-3">Payment has been made successfully</div>
-        <p>Payment ID: #5723</p>
-        <p>From: {{this.$store.state.auth.user.name}}</p>
-        <p>To: Meefah Homeless Animals Shelter</p>
-        <p>Amount: RM{{ donationAmount }}</p>
-        <p>Payment Method: {{ selectedPaymentMethod }}</p>
-        <p>Payment Reference: Donation to Meefah Homeless Animals Shelter</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-toggle="modal">Close</button>
+  <div class="modal" id="summaryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Transaction Summary</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Amount: RM{{ donationAmount }}</p>
+          <p>Payment Method: {{ selectedPaymentMethod }}</p>
+          <p>Payment Purpose: Donation to Meefah Homeless Animals Shelter</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+            data-bs-target="#donationModal">Back</button>
+          <button class="btn btn-primary" @click="processPayment" data-bs-toggle="modal"
+            data-bs-target="#paymentModal">Proceed Payment</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-   <!--  <div class="modal" tabindex="-1" role="dialog" :class="{ 'd-block': showModalFlag }">
+  <div class="modal" id="paymentModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Payment Transaction</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-success text-center mt-3">Payment has been made successfully</div>
+          <p>Payment ID: #5723</p>
+          <p>From: {{ this.$store.state.auth.user.name }}</p>
+          <p>To: Meefah Homeless Animals Shelter</p>
+          <p>Amount: RM{{ donationAmount }}</p>
+          <p>Payment Method: {{ selectedPaymentMethod }}</p>
+          <p>Payment Reference: Donation to Meefah Homeless Animals Shelter</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-toggle="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  <div class="modal" tabindex="-1" role="dialog" :class="{ 'd-block': showModalFlag }">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -128,10 +140,38 @@ export default {
       selectedPaymentMethod: '',
     }
   },
-  methods: {
-    makeDonation(){
-      console.log('hi');
+  computed: {
+    isValidAmount() {
+      return this.donationAmount >= 1;
+    },
+    isValidPaymentMethod() {
+      return !!this.selectedPaymentMethod;
+    },
+    isFormValid() {
+      return this.isValidAmount && this.isValidPaymentMethod;
     }
+  },
+  methods: {
+    checkTwoDecimal() {
+      const amountString = this.donationAmount.toString();
+      const pointPos = amountString.indexOf('.');
+      if (pointPos !== -1) {
+          var maxlengthAmount = pointPos + 3;
+          this.donationAmount = parseFloat(amountString.slice(0, maxlengthAmount));
+      }
+    },
+    makeDonation() {
+      if (this.isFormValid) {
+        $('#summaryModal').show(); // Open the second modal using its reference
+      }
+    },
+    resetForm() {
+      this.donationAmount = '';
+      this.selectedPaymentMethod = '';
+      this.amountTouched = false;
+      this.paymentMethodTouched = false;
+      this.submitAttempted = false;
+    },
   },
 }
 </script>

@@ -6,23 +6,11 @@
         data-bs-target="#strayPostModal" @click="openModal">Add Stray Post</button>
       <router-link v-else class="btn btn-primary mb-3 float-right" to="/login">Add Stray Post</router-link>
     </div>
-    <!-- <div class="form-group">
-      <label for="location">Search Location*</label>
-      <div class="input-group">
-        <input type="text" class="form-control" id="location" v-model="searchInput" placeholder="Search for a location"
-          @input="onSearchInput">
-        <div class="input-group-append">
-          <button class="btn btn-primary" @click="searchLocation">Search</button>
-        </div>
-      </div>
-    </div> -->
     <div class="form-group">
       <div class="input-group">
+        <!-- <label class="form-label fw-bold">Search location</label> -->
         <input type="text" class="form-control" id="location" v-model="searchInput" placeholder="Search for a location"
           @input="onSearchInput" @click="clearSearchInput">
-        <!-- <div class="input-group-append">
-          <button class="mr-2 btn btn-primary" @click="searchLocation">Search</button>
-        </div> -->
       </div>
       <ul v-if="autocompleteResults.length" class="list-group mt-2">
         <li v-for="(result, index) in autocompleteResults" :key="index" class="list-group-item"
@@ -58,21 +46,28 @@
         <div class="modal-body">
           <form>
             <div class="form-group">
-              <label for="title">Title*</label>
-              <input type="text" class="form-control" id="title" v-model="strayPost.title" required>
+              <label for="title" class="form-label fw-bold">Title<span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="title" v-model="strayPost.title" required :class="{ 'is-invalid': v$.strayPost.title.$error }">
+              <div v-if="v$.strayPost.title.$error" class="invalid-feedback">Title is required.</div>
             </div>
-            <div class="form-group">
-              <label for="description">Description</label>
-              <textarea class="form-control" id="description" v-model="strayPost.description" required></textarea>
+            <div class="form-group mt-3">
+              <label for="description" class="form-label fw-bold">Description<span class="text-danger">*</span></label>
+              <textarea class="form-control" id="description" v-model="strayPost.description" required :class="{ 'is-invalid': v$.strayPost.description.$error }"></textarea>
+              <div v-if="v$.strayPost.description.$error" class="invalid-feedback">Description is required.</div>
             </div>
-            <div class="form-group">
-              <label for="image">Image*</label>
+            <div class="form-group mt-3">
+              <label for="image" class="form-label fw-bold">Image<span class="text-danger">*</span></label>
               <input type="file" class="form-control" id="image" ref="imageInput" accept="image/*"
-                  v-on:change="handleImage" />
-                <img v-if="imageUrl" :src="imageUrl" class="mt-2" style="max-width: 200px;" />
+                v-on:change="handleImage" :class="{ 'is-invalid': v$.imageFile.$error }" @input="$formulate.reset('strayPost.image')"/>
+                <div v-if="v$.imageFile.$error" class="invalid-feedback">Image is required.</div>
+              <!-- <div v-if="v$.strayPost.image.$dirty && $v.strayPost.image.$error" class="text-danger">Image is
+                required.</div> -->
+              <!-- <div v-if="v$.strayPost.image.$pending && $v.strayPost.image.$error" class="text-danger">Invalid image
+                file.</div> -->
+              <img v-if="imageUrl" :src="imageUrl" class="mt-2" style="max-width: 200px;" />
             </div>
-            <div class="form-group mt-2 mr-2">
-              <p v-if="computedLocation">Location: {{ computedLocation }}</p>
+            <div class="form-group mt-3 mr-2">
+              <p v-if="computedLocation"><b>Location:</b> {{ computedLocation }}</p>
             </div>
             <input type="hidden" name="lat" :value="strayPost.position.lat" />
             <input type="hidden" name="lng" :value="strayPost.position.lng" />
@@ -93,14 +88,19 @@
 </template>
   
 <script>
+import { useVuelidate } from '@vuelidate/core'
+import { required } from '@vuelidate/validators';
+import { Loader } from '@googlemaps/js-api-loader';
 export default {
   name: 'StrayPost',
+  //setup: () => ({ v$: useVuelidate() }),
+  setup() {
+  const v$ = useVuelidate();
+  return { v$ };
+  },
   data() {
     return {
       openedMarkerID: null,
-      /* autocompleteService: null,
-      autocompleteLocations: [],
-      showAutocomplete: false, */
       searchInput: '',
       autocompleteResults: [],
       markers: [],
@@ -117,20 +117,29 @@ export default {
       }
     };
   },
-  /* watch: {
-  'strayPost.location': function(newLocation) {
-    this.strayPost.location = newLocation;
-    console.log('strayPost.location changed:', newLocation);
-  }
-  }, */
+  validations() {
+    return {
+      imageFile: {required},
+      strayPost: {
+        title: { required },
+        description: { required },
+        //image: { required },
+      }
+    }
+  },
   mounted() {
     this.$refs.mapRef.$mapPromise.then((map) => {
       this.map = map;
       console.log('map is loaded now', map);
     });
+    /* this.loadGoogleMapsAPI().then(() => {
+      console.log('Google Maps API loaded successfully');
+      // Call your function or perform any operations that require the API here
+    }).catch((error) => {
+      console.error('Error loading Google Maps API:', error);
+    }); */
     this.getStrayPosts();
     this.getUserLocation();
-    /* this.autocompleteService = new google.maps.places.AutocompleteService(); */
   },
   computed: {
     isAuthenticated() {
@@ -154,6 +163,13 @@ export default {
     }
   },
   methods: {
+    /* loadGoogleMapsAPI() {
+      const loader = new Loader({
+        apiKey: 'AIzaSyAfrTNx21m1BpOFe12uPZsCof8An3TKutk', // Replace with your own API key
+        libraries: ['places'],
+      });
+      return loader.load();
+    }, */
     openMarker(id) {
       this.openedMarkerID = id
     },
@@ -162,17 +178,21 @@ export default {
     },
     openModal() {
       if (this.strayPost.location === '') {
-        // Display an error message or handle the validation error as desired
-        alert('Location is required');
+        // Display a warning message for required location
+        this.$swal({
+          title: 'Alert Message',
+          text: 'Location is required. Please use your current location or input a location.',
+          icon: 'warning',
+        });
         $('#strayPostModal').modal('hide');
         return;
       }
-      else{
+      else {
         $('#strayPostModal').modal('show');
       }
     },
     getStrayPosts() {
-      axios.get('https://petcare-ec207baddaf0.herokuapp.com/api/strayposts')
+      axios.get('/api/strayposts')
         .then((response) => {
           const strayPosts = response.data;
           console.log(strayPosts);
@@ -229,20 +249,6 @@ export default {
         console.error('Geolocation is not supported by this browser.');
       }
     },
-    /* searchLocation() {
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ address: this.searchInput }, (results, status) => {
-        if (status === 'OK' && results.length > 0) {
-          const location = results[0].geometry.location;
-          this.strayPost.location = {
-            lat: location.lat(),
-            lng: location.lng(),
-          };
-        } else {
-          console.error('Geocode was not successful for the following reason:', status);
-        }
-      });
-    }, */
     searchLocation() {
       if (this.selectedLocation === 'current') {
         console.log('select current');
@@ -292,39 +298,52 @@ export default {
       });
     },
     addStrayPost() {
-      console.log('calling this method');
-      const formData = new FormData();
-      formData.append('title', this.strayPost.title);
-      formData.append('description', this.strayPost.description);
-      formData.append('image', this.imageFile);
-      formData.append('location', this.strayPost.location);
-      formData.append('latitude', this.strayPost.position.lat);
-      formData.append('longitude', this.strayPost.position.lng);
-      formData.append('users_id', this.$store.state.auth.user.id);
-      console.log('show adding');
-      for (let [key, value] of formData.entries()) {
-        console.log(key, value);
-      }
+      //event.preventDefault();
+      this.v$.$touch(); 
+      console.log(this.v$.strayPost.title.$error);
+      console.log(this.v$.$validate());
+      console.log(this.v$.$error);
+      console.log(this.v$.strayPost.image.$dirty);
+      console.log(this.v$.strayPost.image.$error);
+      if(this.v$.$error)
+        $('#strayPostModal').modal('show');
+      //const isFormCorrect = this.v$.$validate()
+      // you can show some extra alert to the user or just leave the each field to show it's `$errors`.
+      else {
+        console.log('calling this method');
+        const formData = new FormData();
+        formData.append('title', this.strayPost.title);
+        formData.append('description', this.strayPost.description);
+        formData.append('image', this.imageFile);
+        formData.append('location', this.strayPost.location);
+        formData.append('latitude', this.strayPost.position.lat);
+        formData.append('longitude', this.strayPost.position.lng);
+        formData.append('users_id', this.$store.state.auth.user.id);
+        console.log('show adding');
+        for (let [key, value] of formData.entries()) {
+          console.log(key, value);
+        }
 
-      axios.post('https://petcare-ec207baddaf0.herokuapp.com/api/strayposts', formData)
-        .then(response => {
-          console.log('api ok');
-          console.log(response.data);
-          this.strayPosts.push(response.data);
-          // Clear the form input values
-          this.resetForm();
-          toastr.success('Stray post created successfully');
-          location.reload();
-        })
-        .catch((error) => {
-          // Handle the error
-          console.log(error.response.data);
-          toastr.error('Stray post created unsuccessfully');
-        });
+        axios.post('/api/strayposts', formData)
+          .then(response => {
+            console.log('api ok');
+            console.log(response.data);
+            this.strayPosts.push(response.data);
+            // Clear the form input values
+            this.resetForm();
+            toastr.success('Stray post created successfully');
+            location.reload();
+          })
+          .catch((error) => {
+            // Handle the error
+            console.log(error.response.data);
+            toastr.error('Stray post created unsuccessfully');
+          });
+      }
     },
     resetForm() {
       console.log('reset');
-        this.strayPost = {
+      this.strayPost = {
         title: '',
         description: '',
         image: '',
@@ -334,7 +353,7 @@ export default {
       this.$refs.imageInput.value = '';
       this.searchInput = '';
       this.autocompleteResults = [];
-
+      this.v$.$reset();
     },
     handleImage(event) {
       console.log('handle image');
@@ -342,53 +361,7 @@ export default {
       console.log(this.imageFile);
     }
   },
-  /* onSearchInput() {
-    if (this.searchInput === '') {
-      this.autocompleteLocations = [];
-      this.showAutocomplete = false;
-      return;
-    }
-
-    // Fetch autocomplete predictions using the AutocompleteService
-    this.autocompleteService.getPlacePredictions(
-      {
-        input: this.searchInput,
-        componentRestrictions: { country: 'your_country_code' }, // Add your country code here
-      },
-      (predictions, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          this.autocompleteLocations = predictions;
-          this.showAutocomplete = true;
-        } else {
-          console.error('Autocomplete request failed:', status);
-        }
-      }
-    );
-  },
-
-  selectAutocompleteLocation(location) {
-    // Set the selected location as the search input
-    this.searchInput = location.description;
-    this.showAutocomplete = false;
-
-    // Use Geocoding to get the coordinates for the selected location
-    const geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ placeId: location.place_id }, (results, status) => {
-      if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
-        const selectedLocation = results[0].geometry.location;
-        this.strayPost.location = {
-          lat: selectedLocation.lat(),
-          lng: selectedLocation.lng(),
-        };
-      } else {
-        console.error('Geocode request failed:', status);
-      }
-    });
-  }, */
 }
 </script>
   
-<style scoped>
-/* Add your styles here */
-</style>
   

@@ -65,27 +65,10 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-            data-bs-target="#adoptAnimalModal">Adopt</button> <!--  @click="adoptAnimal(selectedAnimal.id)" -->
+            data-bs-target="#adoptAnimalModal" @click="adoptAnimal(selectedAnimal.id)">Adopt</button>
         </div>
       </div>
     </div>
-</div>
-<div class="modal fade" id="adoptAnimalModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog  modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Adopt Animal</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>Are you sure you want to adopt this animal?</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" @click="adoptAnimal(selectedAnimal.id)">Confirm</button>
-      </div>
-    </div>
-  </div>
 </div>
 </template>
   
@@ -117,27 +100,37 @@ export default {
       console.log(this.selectedAnimal);
     },
     adoptAnimal(id){
-      console.log(id);
-      console.log(this.$store.state.auth.user.id);
-      axios.post('/api/adoptionapplications', {
-        users_id: this.$store.state.auth.user.id,
-        adoption_animals_id: id,
-        /* application_date: application_date *//* new Date().toISOString().split('T')[0] */
-      })
-      .then(response => {
-        console.log(response.data);
-        toastr.success(response.data.message);
-        // show success message and close modal
-      })
-      .catch(error => {
-        console.log(error);
-        // show error message
-      });
-      // Close the modal
-      $('#adoptAnimalModal').modal('hide');
+      this.$swal({
+        title: 'Confirmation',
+        text: 'Are you sure you want to adopt this animal?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel'
+      }).then(function (result) {
+          if (result.isConfirmed) {
+        console.log(id);
+        console.log(this.$store.state.auth.user.id);
+        axios.post('/api/adoptionapplications', {
+          users_id: this.$store.state.auth.user.id,
+          adoption_animals_id: id,
+          /* application_date: application_date *//* new Date().toISOString().split('T')[0] */
+        })
+        .then(response => {
+          console.log(response.data);
+          toastr.success(response.data.message);
+          // show success message and close modal
+        })
+        .catch(error => {
+          console.log(error);
+          // show error message
+        });
+      }});
+        // Close the modal
+        //$('#adoptAnimalModal').modal('hide');
     }
     /* getAdoptionAnimal(id) {
-      axios.get(`https://petcare-ec207baddaf0.herokuapp.com/api/adoptionanimals/${id}`)
+      axios.get(`/api/adoptionanimals/${id}`)
         .then(response => {
           this.animal = response.data;
         })
