@@ -154,19 +154,13 @@ class UserController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-        ]);
-
+        ]);        
         $status = Password::sendResetLink($request->only('email'));
 
         return $status === Password::RESET_LINK_SENT
             ? response()->json(['message' => 'Reset password link sent to your email.'])
             : response()->json(['message' => 'Failed to send reset password link.'], 500);
     }
-
-    /*  public function showResetPasswordForm($token)
-    {
-        return view('reset-password', ['token' => $token]);
-    } */
 
     public function resetPassword(Request $request)
     {
