@@ -257,8 +257,6 @@ export default {
       }
       else {
         let editFormData = new FormData();
-        //console.log(this.strayPost.position.lat);
-        //console.log(this.strayPost.position.lng);
         editFormData.append('title', this.strayPost.title);
         editFormData.append('description', this.strayPost.description);
         editFormData.append('location', this.strayPost.location);

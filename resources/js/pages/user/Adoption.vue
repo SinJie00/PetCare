@@ -79,10 +79,19 @@ export default {
     this.fetchAvailableAnimals();
   },
   methods: {
+    checkLogin() {
+      console.log('checklogin');
+      if (!this.$store.getters['auth/isLoggedIn']) {
+        // User is not logged in, redirect to login page
+        this.$router.push('/login');
+        return;
+      }
+      console.log(this.$store.state.auth.user.id);
+    },
     displayAge(ageInMonth) {
       if (ageInMonth === 1) {
         return '1 month old';
-      } else if (ageInMonth  > 12) {
+      } else if (ageInMonth > 12) {
         const ageInYear = Math.floor(ageInMonth / 12);
         if (ageInYear === 1) {
           return '1 year old';
@@ -108,19 +117,23 @@ export default {
       console.log(this.selectedAnimal);
     },
     adoptAnimal(id) {
+      this.checkLogin();
+      const userId = this.$store.state.auth.user.id;
+      console.log(userId);
+      var self = this;
       this.$swal({
         title: 'Confirmation',
         text: 'Are you sure you want to adopt this animal?',
-        icon: 'warning',
+        icon: 'question',
         showCancelButton: true,
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel'
       }).then(function (result) {
         if (result.isConfirmed) {
           console.log(id);
-          console.log(this.$store.state.auth.user.id);
+          //console.log(this.$store.state.auth.user.id);
           axios.post('/api/adoptionapplications', {
-            users_id: this.$store.state.auth.user.id,
+            users_id: userId,
             adoption_animals_id: id,
             /* application_date: application_date *//* new Date().toISOString().split('T')[0] */
           })
@@ -132,6 +145,15 @@ export default {
             .catch(error => {
               console.log(error);
               // show error message
+              if (error.response && error.response.status === 400) {
+                self.$swal({
+                  title: 'Alert Message',
+                  text: error.response.data.message,
+                  icon: 'warning',
+                });
+              } else {
+                toastr.error('Adoption application submitted unsuccessfully. Please try again later.');
+              }
             });
         }
       });

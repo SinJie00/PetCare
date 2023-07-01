@@ -140,7 +140,7 @@ export default {
               icon: 'warning',
             });
           } else {
-            toastr.error('An unknown error occurred. Please try again later');
+            toastr.error('Volunteer application submitted unsuccessfully. Please try again later.');
           }
         });
       // Close the modal
