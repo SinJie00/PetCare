@@ -303,8 +303,8 @@ export default {
       console.log(this.v$.strayPost.title.$error);
       console.log(this.v$.$validate());
       console.log(this.v$.$error);
-      console.log(this.v$.strayPost.image.$dirty);
-      console.log(this.v$.strayPost.image.$error);
+      //console.log(this.v$.strayPost.image.$dirty);
+      //console.log(this.v$.strayPost.image.$error);
       if(this.v$.$error)
         $('#strayPostModal').modal('show');
       //const isFormCorrect = this.v$.$validate()

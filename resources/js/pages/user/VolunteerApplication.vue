@@ -123,9 +123,21 @@ export default {
     applyVolunteer() {
       console.log(this.$store.state.auth.user.id);
       console.log(this.volunteerType);
+      const userId = this.$store.state.auth.user.id;
+      const volunteer_type = this.volunteerType;
+      const self = this;
+      this.$swal({
+        title: 'Confirmation',
+        text: 'Are you sure you want to apply for volunteer?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel'
+      }).then(function (result) {
+        if (result.isConfirmed) {
       axios.post('/api/volunteerapplications', {
-        users_id: this.$store.state.auth.user.id,
-        volunteer_type: this.volunteerType,
+        users_id: userId,
+        volunteer_type: volunteer_type,
       })
         .then(response => {
           console.log(response.data);
@@ -134,7 +146,7 @@ export default {
         .catch(error => {
           console.log(error);
           if (error.response && error.response.status === 400) {
-            this.$swal({
+            self.$swal({
               title: 'Alert Message',
               text: error.response.data.message,
               icon: 'warning',
@@ -143,6 +155,7 @@ export default {
             toastr.error('Volunteer application submitted unsuccessfully. Please try again later.');
           }
         });
+      }});
       // Close the modal
       $('#volunteerModal').modal('hide');
     }
