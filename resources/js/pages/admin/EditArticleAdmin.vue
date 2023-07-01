@@ -58,8 +58,8 @@ export default {
             editorData: '<p>Article Content.</p>',
             editorConfig: {
                 cloudServices: {
-                    tokenUrl: 'https://98042.cke-cs.com/token/dev/yqFPRGVhny20kEBvcNlfbQcV0ej5PdEm5bEt?limit=10',
-                    uploadUrl: 'https://98042.cke-cs.com/easyimage/upload/'
+                    tokenUrl: 'https://98823.cke-cs.com/token/dev/AZrjeYTRBuRC7za7Z4FMYWg87aaNONvrZbmV?limit=10',
+                    uploadUrl: 'https://98823.cke-cs.com/easyimage/upload/'
                 }
             },
             article: {
