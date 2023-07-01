@@ -35,22 +35,37 @@ class VolunteerApplicationController extends Controller
             'volunteer_type' => 'required',
         ]);
 
-        // Check if the user has a previous pending or approved application of the same type
+        // Check if the user has a previous pending application of the same type
         $existingApplication = VolunteerApplication::where('users_id', $validatedData['users_id'])
-            ->whereIn('status', ['pending', 'approved'])
+            ->where('status', 'Pending')
             ->where('volunteer_type', $validatedData['volunteer_type'])
+            ->latest('application_date')
             ->first();
 
         if ($existingApplication) {
             return response()->json([
-                'message' => 'You have an existing application of the same type. You should not submit the same request again.',
+                'message' => 'You have an existing application for this volunteer type. You should not submit the same request again.',
+            ], 400);
+        }
+
+        // Check if the user has an approved application of the same type
+        $approvedApplication = VolunteerApplication::where('users_id', $validatedData['users_id'])
+            ->where('status', 'Approved')
+            ->where('volunteer_type', $validatedData['volunteer_type'])
+            ->latest('application_date')
+            ->first();
+
+        if ($approvedApplication) {
+            return response()->json([
+                'message' => 'Your existing application for this volunteer type has already been approved. You should not submit the same request again.',
             ], 400);
         }
 
         // Check if the user has a previous rejected application
         $rejectedApplication = VolunteerApplication::where('users_id', $validatedData['users_id'])
-            ->where('status', 'rejected')
+            ->where('status', 'Rejected')
             ->where('volunteer_type', $validatedData['volunteer_type'])
+            ->latest('application_date')
             ->first();
 
         if ($rejectedApplication) {
@@ -61,17 +76,18 @@ class VolunteerApplicationController extends Controller
             $daysSinceRejection = $currentDate->diffInDays($rejectionDate);
 
             if ($daysSinceRejection <= $allowedDuration) {
+                $remainingDays = $allowedDuration - $daysSinceRejection;
                 return response()->json([
-                    'message' => 'You have a rejected application within the allowed duration which is 1 week. Please try again later.',
+                    'message' => 'You have a rejected application for this volunteer type within the allowed duration. You can reapply in ' . $remainingDays . ' day.',
                 ], 400);
             }
         }
 
-        /*$volunteerApplication = new VolunteerApplication();
+        $volunteerApplication = new VolunteerApplication();
         $volunteerApplication->users_id = $validatedData['users_id'];
         $volunteerApplication->volunteer_type = $validatedData['volunteer_type'];
         $volunteerApplication->application_date = Carbon::now();
-        $volunteerApplication->save();*/
+        $volunteerApplication->save();
         return response()->json([
             'message' => 'Volunteer application submitted successfully',
             'data' => '$volunteerApplication'

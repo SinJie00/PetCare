@@ -36,6 +36,58 @@ class AdoptionApplicationController extends Controller
             'adoption_animals_id' => 'required',
         ]);
 
+        // Check if the user has a previous pending or approved application of the same type
+        $existingApplication = AdoptionApplication::where('users_id', $validatedData['users_id'])
+            ->where('status', 'Pending')
+            ->where('adoption_animals_id', $validatedData['adoption_animals_id'])
+            ->latest('application_date')
+            ->first();
+
+        if ($existingApplication) {
+            return response()->json([
+                'message' => 'You have an existing application for this animal. You should not submit the same request again.',
+            ], 400);
+        }
+
+        // Check if the user has an approved application of the same type
+        $approvedApplication = AdoptionApplication::where('users_id', $validatedData['users_id'])
+            ->where('status', 'Approved')
+            ->where('adoption_animals_id', $validatedData['adoption_animals_id'])
+            ->latest('application_date')
+            ->first();
+
+        if ($approvedApplication) {
+            return response()->json([
+                'message' => 'Your existing application for this animal has already been approved. You should not submit the same request again.',
+            ], 400);
+        }
+
+        // Check if the user has a previous rejected application
+        $rejectedApplication = AdoptionApplication::where('users_id', $validatedData['users_id'])
+            ->where('status', 'Rejected')
+            ->where('adoption_animals_id', $validatedData['adoption_animals_id'])
+            ->latest('application_date')
+            ->first();
+
+        if ($rejectedApplication) {
+            $allowedDuration = 7; // Adjust the duration as per your requirements
+            $rejectionDate = Carbon::parse($rejectedApplication->application_date);
+            $currentDate = Carbon::now();
+            $daysSinceRejection = $currentDate->diffInDays($rejectionDate);
+
+            if ($daysSinceRejection < $allowedDuration) {
+                $remainingDays = $allowedDuration - $daysSinceRejection;
+                return response()->json([
+                    'message' => 'You have a rejected application for this animal within the allowed duration. You can reapply in ' . $remainingDays . ' day.',
+                ], 400);
+            }
+            /* else{
+                return response()->json([
+                    'message' => 'You have a ,ekeke'. $daysSinceRejection .'and'.$rejectionDate .'and'.$currentDate,
+                ], 400);
+            } */
+        }
+
         $adoptionApplication = new AdoptionApplication();
         $adoptionApplication->users_id = $validatedData['users_id'];
         $adoptionApplication->adoption_animals_id = $validatedData['adoption_animals_id'];
