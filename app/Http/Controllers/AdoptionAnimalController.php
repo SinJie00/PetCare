@@ -104,7 +104,7 @@ class AdoptionAnimalController extends Controller
         $animal->save();
 
         return response()->json([
-            'message' => 'Animal updated successfully',
+            'message' => 'Adoption animal updated successfully',
             'animal' => $animal
         ]);
     }
