@@ -222,7 +222,8 @@ router.beforeEach((to, from, next) => {
   const isAdmin = store.getters['auth/isAdmin'];
   const isAuthenticated = store.getters['auth/isLoggedIn'];
 
-  if ((to.name === 'Login' && isAuthenticated) || (to.matched.some(record => record.meta.requiresAdmin) && !isAdmin)) {
+  if ((to.matched.some(record => record.meta.requiresAdmin) && !isAdmin)) {
+    console.log('here in index');
     next({ name: 'Home' }); // redirect user to home page
   } else if (to.name === 'Profile' && !isAuthenticated) {
     next({ name: 'Login' }); // redirect unauthenticated user to login page
