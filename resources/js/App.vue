@@ -139,6 +139,10 @@ export default {
       console.log(this.$store.state.auth.user);
       const user = this.$store.state.auth.user;
       //return Object.keys(user).length ? user : null;
+      if (user === undefined || user === null) {
+        console.log('return null user');
+        return null;
+      }
       if (Object.keys(user).length === 0) {
         console.log('return null user');
         return null;

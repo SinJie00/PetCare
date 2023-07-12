@@ -100,8 +100,9 @@ export default {
                 console.log(this.user);
                 await this.$store.dispatch('auth/register',this.user);
                 console.log('register ok');
+                this.$router.push('/login');// Redirect to Login page
+                console.log('hi');
                 toastr.success('Registration successful!');
-                this.$router.push({ name: 'Login' }); // Redirect to Login page
             } catch (error) {
                 console.log('error occur here');
                 if (error.response && error.response.status === 422) {
